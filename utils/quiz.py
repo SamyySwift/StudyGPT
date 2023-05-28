@@ -1,0 +1,181 @@
+import streamlit as st
+import os
+import re
+
+
+def evaluate_response(QA, questions, responses):
+    correct_answers = {}
+    num_correct = 0
+
+    if "correct_answers" not in st.session_state:
+        st.session_state.correct_answers = correct_answers
+    if "num_correct" not in st.session_state:
+        st.session_state.num_correct = num_correct
+
+    for i in range(len(questions)):
+        # Specify the prompt for the GPT model
+        prompt = f"""Given this Question: {questions[i]} and the Student Response: {responses[i]}, \
+                            You're to return True if answer is correct and False if answer is \
+                            incorrect followed by the correct answer.
+                            """
+        # Use the GPT model to generate feedback on the student's response
+        feedback = QA.query(prompt, st.session_state.vectordb)
+
+        if "True" in feedback:
+            st.session_state.num_correct += 1
+        elif "False" in feedback:
+            correct_answers[questions[i]] = feedback.split(",")[-1]
+
+    score = round((st.session_state.num_correct / len(questions)) * 100, 2)
+
+    return score, correct_answers
+
+
+def delete_question():
+    os.remove("questions.txt")
+
+
+def clear_fields():
+    st.session_state.response = st.session_state.txt_inp
+    st.session_state.response = st.session_state.txt
+    st.session_state.txt_inp = ""
+    st.session_state.txt = ""
+
+
+def reset_quiz(length):
+    delete_question()
+    st.session_state.response = ""
+    st.session_state.user_responses = [0] * length
+    st.session_state.count = 0
+
+
+def extract_questions(file_path):
+    questions = []
+    current_question = ""
+
+    with open(file_path, "r") as file:
+        lines = file.readlines()
+
+        # Skip empty lines at the beginning of the file
+        while lines and not lines[0].strip():
+            lines.pop(0)
+
+        for line in lines:
+            line = line.strip()
+
+            # Check if the line starts with a number followed by a dot
+            if re.match(r"^\d+\.", line):
+                # If there is a current question, add it to the list
+                if current_question:
+                    questions.append(current_question.strip())
+
+                # Start a new question
+                current_question = line
+            else:
+                # Append the line to the current question
+                current_question += " " + line
+
+        # Add the last question to the list
+        if current_question:
+            questions.append(current_question.strip())
+
+    return questions
+
+
+def present_quiz(QA, questions):
+    length = len(questions)
+    count = 0
+    user_responses = [0] * length
+
+    if "count" not in st.session_state:
+        st.session_state.count = count
+    if "response" not in st.session_state:
+        st.session_state.response = ""
+    if "user_responses" not in st.session_state:
+        st.session_state.user_responses = user_responses
+
+    # Placeholder for question counter
+    quest_counter_plc = st.empty()
+    with quest_counter_plc:
+        st.markdown(f"### Question {st.session_state.count+1}/{length}")
+
+    placeholder = st.empty()
+
+    with placeholder.container():
+        st.write(questions[0])
+        st.text_input(
+            "Provide your answer",
+            key="txt_inp",
+            on_change=clear_fields,
+            placeholder="Provide your answer",
+            label_visibility="hidden",
+        )
+        try:
+            if st.session_state.count != length:
+                if st.session_state.response:
+                    st.session_state.user_responses[
+                        st.session_state.count
+                    ] = st.session_state.response
+
+                    st.session_state.response = ""
+
+                _, col4, col5 = st.columns([8, 3, 11])
+                with col4:
+                    bt_plc1 = st.empty()
+                    with bt_plc1:
+                        if st.button("Prev") and st.session_state.count != 0:
+                            st.session_state.count -= 1
+
+                with col5:
+                    bt_plc2 = st.empty()
+                    with bt_plc2:
+                        if st.button("Next"):
+                            st.session_state.count += 1
+                    with quest_counter_plc:
+                        st.markdown(f"### Question {st.session_state.count+1}/{length}")
+
+                with placeholder.container():
+                    st.markdown(questions[st.session_state.count])
+                    st.text_input(
+                        "Provide your answer",
+                        key="txt",
+                        on_change=clear_fields,
+                        placeholder="Provide your answer",
+                        label_visibility="hidden",
+                    )
+        except:
+            with quest_counter_plc:
+                st.write("")
+            with placeholder.container():
+                st.write("")
+                with bt_plc1:
+                    st.write("")
+                with bt_plc2:
+                    st.write("")
+                with st.spinner("StudyGPT is evaluating your responeses..."):
+                    score, answers = evaluate_response(
+                        QA, questions, st.session_state.user_responses
+                    )
+
+            st.success("Done evaluating...")
+
+            with placeholder.container():
+                st.subheader(":blue[Your Performance]")
+                if score >= 50:
+                    st.write(f":red[GRADE:] :green[{score}%]")
+                    st.write("✅Congratulations!!! You **:green[passed!🎉]**")
+
+                else:
+                    st.write(f":red[GRADE:] :red[{score}%]")
+                    st.write("Unfortunately, you **:red[failed!😔]**")
+
+                st.write("###")
+                st.subheader(":blue[Corrections]")
+                st.write("Below are the correct answers to the ones you got wrong❌")
+                st.markdown("---")
+                # display the questions
+                for q, a in answers.items():
+                    st.write(q)
+                    st.write(f":green[Correct Answer: {a}]")
+
+                st.button("Reset Quiz", on_click=reset_quiz(length))
