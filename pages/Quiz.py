@@ -2,16 +2,22 @@ import streamlit as st
 from utils.quiz import present_quiz, extract_questions
 import os
 from streamlit_extras.add_vertical_space import add_vertical_space
+from utils.config import display_alert
 
-st.header(":blue[Practice]:red[Quiz]")
-add_vertical_space(3)
+
+st.header(":blue[Practice] :red[Quiz]")
+st.markdown(
+    "**:blue[Study]:red[GPT]** can generate both :orange[theoritical] and :red[mulitichoice] questions for you 😉 based on your provided documents. \
+    It also evaluates and grades your performance after completing a quiz.  \n :blue[Psst!] You'll need to score at least :green[50%] to pass the quiz."
+)
+st.markdown("---")
+add_vertical_space(1)
 
 try:
     QA = st.session_state.QuestionAnswer
     return_source = st.session_state.return_source
 except AttributeError:
-    st.error("Please ensure that you have indexed your documents")
-
+    display_alert("Please ensure that you have indexed your documents", icon="warning")
 if "quiz_questions" not in st.session_state:
     st.session_state.quiz_questions = ""
 
@@ -28,7 +34,9 @@ def clear_quiz_query():
                 f.write(st.session_state.quiz_questions)
         except AttributeError:
             # reset_quiz(length=len(questions))
-            st.warning("Please ensure that you have indexed your documents")
+            display_alert(
+                "Please ensure that you have indexed your documents", icon="warning"
+            )
 
     st.session_state.quiz_query = ""
 
@@ -43,4 +51,7 @@ st.text_input(
 
 if os.path.exists("questions.txt"):
     questions = extract_questions("questions.txt")
-    present_quiz(QA, questions)
+    try:
+        present_quiz(QA, questions)
+    except NameError:
+        display_alert("Go to home page to start app again")

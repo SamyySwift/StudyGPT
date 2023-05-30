@@ -14,17 +14,23 @@ def evaluate_response(QA, questions, responses):
 
     for i in range(len(questions)):
         # Specify the prompt for the GPT model
-        prompt = f"""Given this Question: {questions[i]} and the Student Response: {responses[i]}, \
-                            You're to return True if answer is correct and False if answer is \
+        prompt = f"""Given this Question: {questions[i]} and the Response: {responses[i]}, \
+                            Return True if the response is closely related to the actual answer and return False if the answer is \
                             incorrect followed by the correct answer.
+
+                            for example:
+                            
+                            True
+                            False, followed up by the correct answer
                             """
         # Use the GPT model to generate feedback on the student's response
         feedback = QA.query(prompt, st.session_state.vectordb)
+        print(feedback)
 
         if "True" in feedback:
             st.session_state.num_correct += 1
-        elif "False" in feedback:
-            correct_answers[questions[i]] = feedback.split(",")[-1]
+        elif "False" in feedback or "No" in feedback:
+            correct_answers[questions[i]] = feedback
 
     score = round((st.session_state.num_correct / len(questions)) * 100, 2)
 
@@ -97,7 +103,7 @@ def present_quiz(QA, questions):
     # Placeholder for question counter
     quest_counter_plc = st.empty()
     with quest_counter_plc:
-        st.markdown(f"### Question {st.session_state.count+1}/{length}")
+        st.markdown(f"#### Question {st.session_state.count+1}/{length}")
 
     placeholder = st.empty()
 
@@ -152,7 +158,9 @@ def present_quiz(QA, questions):
                     st.write("")
                 with bt_plc2:
                     st.write("")
-                with st.spinner("StudyGPT is evaluating your responeses..."):
+                with st.spinner(
+                    ":blue[Study]:red[GPT] is evaluating your responses..."
+                ):
                     score, answers = evaluate_response(
                         QA, questions, st.session_state.user_responses
                     )
@@ -162,16 +170,16 @@ def present_quiz(QA, questions):
             with placeholder.container():
                 st.subheader(":blue[Your Performance]")
                 if score >= 50:
-                    st.write(f":red[GRADE:] :green[{score}%]")
+                    st.write(f":blue[GRADE:] :green[{score}%]")
                     st.write("✅Congratulations!!! You **:green[passed!🎉]**")
 
                 else:
-                    st.write(f":red[GRADE:] :red[{score}%]")
+                    st.write(f":blue[GRADE:] :red[{score}%]")
                     st.write("Unfortunately, you **:red[failed!😔]**")
 
                 st.write("###")
                 st.subheader(":blue[Corrections]")
-                st.write("Below are the correct answers to the ones you got wrong❌")
+                st.write("Below are the correct answers to the ones you got wrong")
                 st.markdown("---")
                 # display the questions
                 for q, a in answers.items():
