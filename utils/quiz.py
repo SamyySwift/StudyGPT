@@ -15,7 +15,7 @@ def evaluate_response(QA, questions, responses):
     for i in range(len(questions)):
         # Specify the prompt for the GPT model
         prompt = f"""Given this Question: {questions[i]} and the Response: {responses[i]}, \
-                            Return True if the response is closely related to the actual answer and return False if the answer is \
+                            Return True if the response is correct compared to the actual answer and return False if the response is \
                             incorrect followed by the correct answer.
 
                             for example:
@@ -25,7 +25,6 @@ def evaluate_response(QA, questions, responses):
                             """
         # Use the GPT model to generate feedback on the student's response
         feedback = QA.query(prompt, st.session_state.vectordb)
-        print(feedback)
 
         if "True" in feedback:
             st.session_state.num_correct += 1
