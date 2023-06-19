@@ -1,15 +1,16 @@
-import json
 import os
 
 import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_lottie import st_lottie
-from streamlit_pills import pills
+
+# from streamlit_pills import pills
 from dataclasses import dataclass
 from typing import Literal
 from utils.config import display_alert, load_lottiefile
-from utils.extract import extract_text, process_scanned_documents
+
+# from utils.extract import extract_text, process_scanned_documents
 from utils.flipbot import create_vectordb, load_vectordb, query
 
 
@@ -103,9 +104,9 @@ def main():
         ":blue[Upload your documents]", accept_multiple_files=True
     )
     col3, col4 = st.columns(2)
+    # with col3:
+    #     doc_type = st.checkbox("Is document scanned?", value=False)
     with col3:
-        doc_type = st.checkbox("Is document scanned?", value=False)
-    with col4:
         scan = st.checkbox("Scan Over Documents", value=False)
 
     if uploaded_file:
@@ -113,14 +114,14 @@ def main():
             file_name = file.name
             # if "file_name" not in st.session_state:
             #     st.session_state.file_name = file_name
-            if doc_type:
-                with open(f"scanned_docs/{file_name}", "wb") as f:
-                    f.write(file.read())
-                process_scanned_documents()
-                extract_text()
-            else:
-                with open(f"docs/{file_name}", "wb") as f:
-                    f.write(file.read())
+            # if doc_type:
+            #     with open(f"scanned_docs/{file_name}", "wb") as f:
+            #         f.write(file.read())
+            #     process_scanned_documents()
+            #     extract_text()
+
+            with open(f"docs/{file_name}", "wb") as f:
+                f.write(file.read())
 
     if st.button("Index Docs"):
         dir = os.listdir("docs")
