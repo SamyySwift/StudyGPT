@@ -3,18 +3,18 @@ from utils.quiz import present_quiz, extract_questions
 import os
 from streamlit_extras.add_vertical_space import add_vertical_space
 from utils.config import display_alert
+from utils.flipbot import query
 
 
 st.header(":blue[Practice] :red[Quiz]")
 st.markdown(
-    "**:blue[Study]:red[GPT]** can generate both :orange[theoritical] and :red[mulitichoice] questions for you 😉 based on your provided documents. \
+    "**:blue[Flip]:red[Bot]** can generate both :orange[theoritical] and :red[mulitichoice] questions for you 😉 based on your provided documents. \
     It also evaluates and grades your performance after completing a quiz.  \n :blue[Psst!] You'll need to score at least :green[50%] to pass the quiz."
 )
 st.markdown("---")
 add_vertical_space(1)
 
 try:
-    QA = st.session_state.QuestionAnswer
     return_source = st.session_state.return_source
 except AttributeError:
     display_alert("Please ensure that you have indexed your documents", icon="warning")
@@ -25,7 +25,7 @@ if "quiz_questions" not in st.session_state:
 def clear_quiz_query():
     if st.session_state.quiz_query:
         try:
-            st.session_state.quiz_questions = QA.query(
+            st.session_state.quiz_questions = query(
                 st.session_state.quiz_query,
                 st.session_state.vectordb,
                 st.session_state.return_source,
@@ -52,6 +52,6 @@ st.text_input(
 if os.path.exists("questions.txt"):
     questions = extract_questions("questions.txt")
     try:
-        present_quiz(QA, questions)
+        present_quiz(query, questions)
     except NameError:
         display_alert("Go to home page to start app again")

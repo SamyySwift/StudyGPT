@@ -1,4 +1,12 @@
 from streamlit_custom_notification_box import custom_notification_box
+import streamlit as st
+import json
+
+
+@st.cache_data
+def load_lottiefile(filepath: str):
+    with open(filepath, "r", encoding="utf8") as f:
+        return json.load(f)
 
 
 notification_styles = {

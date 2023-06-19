@@ -3,7 +3,7 @@ import os
 import re
 
 
-def evaluate_response(QA, questions, responses):
+def evaluate_response(query, questions, responses):
     correct_answers = {}
     num_correct = 0
 
@@ -24,7 +24,7 @@ def evaluate_response(QA, questions, responses):
                             False, followed up by the correct answer
                             """
         # Use the GPT model to generate feedback on the student's response
-        feedback = QA.query(prompt, st.session_state.vectordb)
+        feedback = query(prompt, st.session_state.vectordb)
 
         if "True" in feedback:
             st.session_state.num_correct += 1
@@ -69,7 +69,7 @@ def extract_questions(file_path):
             line = line.strip()
 
             # Check if the line starts with a number followed by a dot
-            if re.match(r"^\d+\.", line):
+            if re.match(r"^[Q\d]+\.", line):
                 # If there is a current question, add it to the list
                 if current_question:
                     questions.append(current_question.strip())
@@ -87,7 +87,7 @@ def extract_questions(file_path):
     return questions
 
 
-def present_quiz(QA, questions):
+def present_quiz(query, questions):
     length = len(questions)
     count = 0
     user_responses = [0] * length
@@ -150,18 +150,16 @@ def present_quiz(QA, questions):
                     )
         except:
             with quest_counter_plc:
-                st.write("")
+                st.empty()
             with placeholder.container():
-                st.write("")
+                st.empty()
                 with bt_plc1:
-                    st.write("")
+                    st.empty()
                 with bt_plc2:
-                    st.write("")
-                with st.spinner(
-                    ":blue[Study]:red[GPT] is evaluating your responses..."
-                ):
+                    st.empty()
+                with st.spinner(":blue[Flip]:red[Bot] is evaluating your responses..."):
                     score, answers = evaluate_response(
-                        QA, questions, st.session_state.user_responses
+                        query, questions, st.session_state.user_responses
                     )
 
             st.success("Done evaluating...")

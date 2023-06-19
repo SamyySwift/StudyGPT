@@ -7,8 +7,8 @@ import glob
 import os
 
 
-# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract"
-# path = r"C:\path-files\poppler-23.01.0\Library\bin"
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract"
+path = r"C:\path-files\poppler-23.01.0\Library\bin"
 
 
 # get grayscale image
