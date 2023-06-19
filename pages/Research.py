@@ -5,7 +5,7 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 
 col1, col2 = st.columns([2, 4])
 with col1:
-    lottie_bot = load_lottiefile("lotties\\data-analysis.json")
+    lottie_bot = load_lottiefile("lotties\data-analysis.json")
     st_lottie(lottie_bot)
 
 with col2:
