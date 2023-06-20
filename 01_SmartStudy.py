@@ -13,6 +13,8 @@ from utils.config import display_alert, load_lottiefile
 # from utils.extract import extract_text, process_scanned_documents
 from utils.flipbot import create_vectordb, load_vectordb, query
 
+# from utils.firebase import upload_to_firestore, storage, retrieve_path
+
 
 # -------------------------------- PAGE SETUP --------------------------------------------
 st.set_page_config(layout="centered", page_icon="👦", page_title="FlipBot")
@@ -100,8 +102,8 @@ def main():
         # st.markdown("#### Welcome👋 **Samuel Okon**")
 
     st.subheader("Upload files for indexing")
-    uploaded_file = st.file_uploader(
-        ":blue[Upload your documents]", accept_multiple_files=True
+    uploaded_files = st.file_uploader(
+        ":blue[Upload your documents]", accept_multiple_files=True, type="pdf"
     )
     col3, col4 = st.columns(2)
     # with col3:
@@ -109,26 +111,22 @@ def main():
     with col3:
         scan = st.checkbox("Scan Over Documents", value=False)
 
-    if uploaded_file:
-        for file in uploaded_file:
-            file_name = file.name
-            # if "file_name" not in st.session_state:
-            #     st.session_state.file_name = file_name
-            # if doc_type:
-            #     with open(f"scanned_docs/{file_name}", "wb") as f:
-            #         f.write(file.read())
-            #     process_scanned_documents()
-            #     extract_text()
-
-            with open(f"docs/{file_name}", "wb") as f:
-                f.write(file.read())
+    # if uploaded_file:
+    #     for file in uploaded_file:
+    #         file_name = file.name
+    # if "file_name" not in st.session_state:
+    #     st.session_state.file_name = file_name
+    # if doc_type:
+    #     with open(f"scanned_docs/{file_name}", "wb") as f:
+    #         f.write(file.read())
+    #     process_scanned_documents()
+    #     extract_text()
+    # upload_to_firestore(file_name, file.read())
 
     if st.button("Index Docs"):
-        dir = os.listdir("docs")
-        if len(dir) > 0:
-            # Create database name
-            persist_dir = "+".join(filename[:4] for filename in dir)
+        persist_dir = "+".join(file.name[:4] for file in uploaded_files)
 
+        if persist_dir != "":
             if os.path.exists(persist_dir):
                 display_alert("Document is already Indexed!")
                 with st.spinner("Loading Index..."):
@@ -138,7 +136,7 @@ def main():
 
             else:
                 with st.spinner("Indexing your documents..."):
-                    vectordb = create_vectordb(persist_dir, scan)
+                    vectordb = create_vectordb(persist_dir, uploaded_files)
                 if "vectordb" not in st.session_state:
                     st.session_state.vectordb = vectordb
                 display_alert("Done Indexing!")

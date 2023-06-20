@@ -3,12 +3,21 @@ import os
 import streamlit as st
 from langchain.callbacks import get_openai_callback
 from langchain.chains import ConversationalRetrievalChain
-from langchain.document_loaders import PyPDFLoader, DirectoryLoader
+from langchain.document_loaders import PyPDFLoader, UnstructuredPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import (
+    RecursiveCharacterTextSplitter,
+    CharacterTextSplitter,
+)
 from langchain.vectorstores import Chroma
+
+
+# from utils.firebase import storage
+import tempfile
+from PyPDF2 import PdfReader
+import io
 
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
@@ -22,7 +31,8 @@ OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 #         files = os.listdir("docs")
 #         texts = ""
 
-files = os.listdir("docs")
+# files = storage.bucket.list_blobs(prefix="Documents/")
+
 llm = OpenAI()
 embeddings = OpenAIEmbeddings()
 
@@ -36,38 +46,36 @@ if "memory" not in st.session_state:
     )
 
 
-def load_and_split_doc(scan=False):
-    if scan:
-        loader = DirectoryLoader("docs")
-        docs = loader.load()
-        return docs
-    else:
-        # Load documents
-        loaders = []
-        for file in files:
-            # if file.endswith(".pdf"):
-            loaders.append(PyPDFLoader(file))
+def load_and_split_doc(pdf_files):
+    loaders = []
 
-        # Extract documnt contents
-        documents = []
-        for loader in loaders:
-            documents.extend(loader.load())
+    for file in pdf_files:
+        file_data = file.getvalue()
+        with tempfile.NamedTemporaryFile(
+            delete=False, suffix=f"{file.name}"
+        ) as temp_file:
+            temp_file.write(file_data)
 
-        # Split documents into chunks
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, chunk_overlap=100
-        )
-        texts = text_splitter.split_documents(documents)
+        loaders.append(PyPDFLoader(temp_file.name))
+        temp_file.close()
 
-        return texts
+    docs = []
+    for loader in loaders:
+        docs.extend(loader.load())
+
+    # Split documents into chunks
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    chunks = text_splitter.split_documents(docs)
+
+    return chunks
 
 
-def create_vectordb(persist_dir: str, scan: bool):
+def create_vectordb(persist_dir: str, files):
     print("--Creating Index")
-    texts = load_and_split_doc(scan)
+    text_chunks = load_and_split_doc(files)
 
     vectorstore = Chroma.from_documents(
-        texts, embeddings, persist_directory=persist_dir
+        text_chunks, embeddings, persist_directory=persist_dir
     )
     vectorstore.persist()
     return vectorstore
