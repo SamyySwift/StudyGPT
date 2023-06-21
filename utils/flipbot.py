@@ -72,10 +72,13 @@ def create_vectordb(persist_dir: str, files):
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
     temp_file = tempfile.NamedTemporaryFile(delete=False)
-    storage.download(persist_dir, temp_file.name)
-    with open(temp_file.name, "rb") as file:
-        loaded_vectordb = pickle.load(file)
-    temp_file.close()
+    try:
+        storage.download(persist_dir, temp_file.name)
+        with open(temp_file.name, "rb") as file:
+            loaded_vectordb = pickle.load(file)
+    except AttributeError:
+        st.error("Error Downloading Index")
+    # temp_file.close()
 
     return loaded_vectordb
 
