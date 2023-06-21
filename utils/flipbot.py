@@ -11,7 +11,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from utils.firebase import storage, upload_to_firestore
+from utils.firebase import upload_to_firestore, download_from_firestore
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
@@ -73,8 +73,8 @@ def load_vectordb(persist_dir: str):
     print("--Loading Index")
     # temp_file = tempfile.NamedTemporaryFile(delete=False)
     try:
-        storage.download(persist_dir, f"{persist_dir}.pickle")
-        with open(f"{persist_dir}.pickle", "rb") as file:
+        download_from_firestore(persist_dir, f"{persist_dir}.pkl")
+        with open(f"{persist_dir}.pkl", "rb") as file:
             loaded_vectordb = pickle.load(file)
         # temp_file.close()
 

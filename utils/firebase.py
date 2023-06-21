@@ -28,21 +28,34 @@ firebaseConfig = {
     "serviceAccount": service_key,
 }
 
-try:
-    firebase_storage = pyrebase.initialize_app(firebaseConfig)
-    storage = firebase_storage.storage()
-except ServerNotFoundError:
-    st.error("Connection Error")
+
+@st.cache_data
+def init_firebase(firebaseConfig):
+    try:
+        firebase_storage = pyrebase.initialize_app(firebaseConfig)
+        return firebase_storage
+    except ServerNotFoundError:
+        st.error("Connection Error")
 
 
-def upload_to_firestore(filename, file):
-    storage.child(f"{filename}").put(file)
-    print("--Done Uploading")
+fb_storage = init_firebase(firebaseConfig)
+
+if "storage" not in st.session_state:
+    st.session_state.storage = fb_storage.storage()
+
+
+def upload_to_firestore(storage_filename, file):
+    st.session_state.storage.child(storage_filename).put(file)
+    # print("--Done Uploading")
+
+
+def download_from_firestore(storage_file, filename):
+    st.session_state.storage.download(storage_file, filename)
 
 
 def folder_exist(folder_name):
     print("--Checking for folder")
-    blobs = storage.list_files()
+    blobs = st.session_state.storage.list_files()
     for f in blobs:
         if f.name == f"{folder_name}":
             return True
