@@ -1,9 +1,20 @@
 import pyrebase
 from httplib2 import ServerNotFoundError
 import streamlit as st
-import os
 
-key_path = os.path.join("utils", "serviceAccountKey.json")
+service_key = {
+    "type": st.secrets["type"],
+    "project_id": st.secrets["project_id"],
+    "private_key_id": st.secrets["private_key_id"],
+    "private_key": st.secrets["private_key"],
+    "client_email": st.secrets["client_email"],
+    "client_id": st.secrets["client_id"],
+    "auth_uri": st.secrets["auth_uri"],
+    "token_uri": st.secrets["token_uri"],
+    "auth_provider_x509_cert_url": st.secrets["auth_provider_x509_cert_url"],
+    "client_x509_cert_url": st.secrets["client_x509_cert_url"],
+    "universe_domain": st.secrets["universe_domain"],
+}
 
 firebaseConfig = {
     "apiKey": "AIzaSyB6mhQJR3zKAh7XP4GX8YxgDXadgPlguac",
@@ -14,7 +25,7 @@ firebaseConfig = {
     "messagingSenderId": "37185214139",
     "appId": "1:37185214139:web:5d530ebd8f8373b8877b9e",
     "measurementId": "G-SQTDYT12Z8",
-    "serviceAccount": key_path,
+    "serviceAccount": service_key,
 }
 
 try:

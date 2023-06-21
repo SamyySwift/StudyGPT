@@ -76,11 +76,11 @@ def load_vectordb(persist_dir: str):
         storage.download(persist_dir, temp_file.name)
         with open(temp_file.name, "rb") as file:
             loaded_vectordb = pickle.load(file)
+        temp_file.close()
+
+        return loaded_vectordb
     except AttributeError:
         st.error("Error Downloading Index")
-    # temp_file.close()
-
-    return loaded_vectordb
 
 
 def query(query, vectordb, source=False):
