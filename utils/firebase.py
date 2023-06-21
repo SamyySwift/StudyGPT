@@ -29,17 +29,10 @@ firebaseConfig = {
 }
 
 
-def init_firebase(firebaseConfig):
-    try:
-        if "firebase_storage" not in st.session_state:
-            st.session_state.firebase_storage = pyrebase.initialize_app(firebaseConfig)
-        if "storage" not in st.session_state:
-            st.session_state.storage = st.session_state.firebase_storage.storage()
-    except ServerNotFoundError:
-        st.error("Connection Error")
-
-
-init_firebase(firebaseConfig)
+if "firebase_storage" not in st.session_state:
+    st.session_state.firebase_storage = pyrebase.initialize_app(firebaseConfig)
+if "storage" not in st.session_state:
+    st.session_state.storage = st.session_state.firebase_storage.storage()
 
 
 def upload_to_firestore(storage_filename, file):
