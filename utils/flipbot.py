@@ -96,9 +96,9 @@ def query(query, vectordb, source=False):
     response = result["answer"]
 
     if source:
-        for document in result["source_documents"]:
+        for document in result["source_documents"][:3]:
             sources.append(
-                f"Retrieved answer from --> {''.join(document.metadata['source'].split('+')[1:])} at Page: {document.metadata['page']}\n\n"
+                f"Retrieved answer from --> {document.metadata['source']} at Page: {document.metadata['page']}\n\n"
             )
         return f"StudyGPT Response: {response} \n\nCited Sources:\n{' '.join(sources)}"
     else:

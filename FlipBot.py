@@ -9,9 +9,12 @@ from streamlit_lottie import st_lottie
 from utils.config import display_alert, load_lottiefile
 from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, load_vectordb, query
+import PIL
+
+im = PIL.open("static/letter-f.png")
 
 # -------------------------------- PAGE SETUP --------------------------------------------
-st.set_page_config(layout="centered", page_icon="👦", page_title="FlipBot")
+st.set_page_config(layout="centered", page_icon=im, page_title="FlipBot")
 
 with open("static/style.css") as f:
     st.markdown(f"<style>{f.read()}<\style>", unsafe_allow_html=True)
@@ -19,20 +22,20 @@ with open("static/style.css") as f:
 
 # -------------------------------- SIDEBAR ------------------------------------------------
 with st.sidebar:
-    st.header("⚙️**Setup**")
-    st.text_input(
-        "🔑OpenAI API Key",
-        type="password",
-        placeholder="Paste your OpenAI API key here (sk-...)",
-        help="You can get your API key from https://platform.openai.com/account/api-keys.",
-        value=st.session_state.get("OPENAI_API_KEY", ""),
-        key="api_inp",
-    )
+    # st.header("⚙️**Setup**")
+    # st.text_input(
+    #     "🔑OpenAI API Key",
+    #     type="password",
+    #     placeholder="Paste your OpenAI API key here (sk-...)",
+    #     help="You can get your API key from https://platform.openai.com/account/api-keys.",
+    #     value=st.session_state.get("OPENAI_API_KEY", ""),
+    #     key="api_inp",
+    # )
 
-    if st.session_state.api_inp and st.session_state.api_inp[:3] != "sk-":
-        st.error("Invalid API key!")
-    elif st.session_state.api_inp[:3] == "sk-" and len(st.session_state.api_inp) == 51:
-        st.session_state["OPENAI_API_KEY"] = st.session_state.api_inp
+    # if st.session_state.api_inp and st.session_state.api_inp[:3] != "sk-":
+    #     st.error("Invalid API key!")
+    # elif st.session_state.api_inp[:3] == "sk-" and len(st.session_state.api_inp) == 51:
+    #     st.session_state["OPENAI_API_KEY"] = st.session_state.api_inp
 
     st.header("Source Documents")
     st.session_state.return_source = st.checkbox(
