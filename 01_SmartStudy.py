@@ -63,22 +63,22 @@ class Message:
 
 def clear_main_query():
     if st.session_state.main_query:
-        # try:
-        human_prompt = st.session_state.main_query
-        chatgpt_response = query(
-            human_prompt,
-            st.session_state.vectordb,
-            st.session_state.return_source,
-        )
-        st.session_state.history.append(Message("human", human_prompt))
-        st.session_state.history.append(Message("ai", chatgpt_response))
+        try:
+            human_prompt = st.session_state.main_query
+            chatgpt_response = query(
+                human_prompt,
+                st.session_state.vectordb,
+                st.session_state.return_source,
+            )
+            st.session_state.history.append(Message("human", human_prompt))
+            st.session_state.history.append(Message("ai", chatgpt_response))
 
-        # except AttributeError:
-        #     # with alert_placeholder:
-        #     display_alert(
-        #         "Please ensure that you have indexed your documents",
-        #         icon="warning",
-        #     )
+        except AttributeError:
+            # with alert_placeholder:
+            display_alert(
+                "Please ensure that you have indexed your documents",
+                icon="warning",
+            )
     st.session_state.main_query = ""
 
 
@@ -144,18 +144,12 @@ def main():
         with chat_placeholder:
             for chat in st.session_state.history:
                 div = f"""
-            <div class="chat-row 
-                    {'' if chat.origin == 'ai' else 'row-reverse'}">
-                    <img class="chat-icon" src="app/static/{
-                        'ai_icon.png' if chat.origin == 'ai' 
-                                    else 'user.png'}"
-                        width=32 height=32>
-                    <div class="chat-bubble
-                    {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-                        &#8203;{chat.message}
-                    </div>
-            </div>
-                    """
+                <img class="chat-icon" src="app/static/{'ai_icon.png' if chat.origin == 'ai' else 'user.png'}" width=32 height=32>
+                <span class="chat-bubble {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
+                &#8203;{chat.message}
+                </span>
+            """
+
                 st.markdown(div, unsafe_allow_html=True)
 
         # Display a text input widget
