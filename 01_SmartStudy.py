@@ -64,22 +64,22 @@ class Message:
 
 def clear_main_query():
     if st.session_state.main_query:
-        try:
-            human_prompt = st.session_state.main_query
-            chatgpt_response = query(
-                human_prompt,
-                st.session_state.vectordb,
-                st.session_state.return_source,
-            )
-            st.session_state.history.append(Message("human", human_prompt))
-            st.session_state.history.append(Message("ai", chatgpt_response))
+        # try:
+        human_prompt = st.session_state.main_query
+        chatgpt_response = query(
+            human_prompt,
+            st.session_state.vectordb,
+            st.session_state.return_source,
+        )
+        st.session_state.history.append(Message("human", human_prompt))
+        st.session_state.history.append(Message("ai", chatgpt_response))
 
-        except AttributeError:
-            # with alert_placeholder:
-            display_alert(
-                "Please ensure that you have indexed your documents",
-                icon="warning",
-            )
+        # except AttributeError:
+        #     # with alert_placeholder:
+        #     display_alert(
+        #         "Please ensure that you have indexed your documents",
+        #         icon="warning",
+        #     )
     st.session_state.main_query = ""
 
 

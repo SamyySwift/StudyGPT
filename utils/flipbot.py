@@ -16,7 +16,7 @@ from utils.firebase import storage, upload_to_firestore
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
-seperator = "+"
+
 # class questionAnswer:
 #     def __init__(self) -> None:
 #         # key = key
@@ -45,7 +45,7 @@ def load_and_split_doc(pdf_files):
     for file in pdf_files:
         file_data = file.getvalue()
         with tempfile.NamedTemporaryFile(
-            delete=False, suffix=f"{seperator}{file.name}"
+            delete=False, suffix=f"{file.name}"
         ) as temp_file:
             temp_file.write(file_data)
 
@@ -78,7 +78,7 @@ def create_vectordb(persist_dir: str, files):
     return vectorstore
 
 
-@st.cache_resource
+# @st.cache_resource
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
     temp_file = tempfile.NamedTemporaryFile(delete=False)
