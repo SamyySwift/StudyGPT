@@ -2,7 +2,6 @@ import pyrebase
 from httplib2 import ServerNotFoundError
 import streamlit as st
 from streamlit_lottie import st_lottie
-from config import load_lottiefile
 import os
 
 key_path = os.path.join("utils", "serviceAccountKey.json")
@@ -20,8 +19,7 @@ try:
     firebase_storage = pyrebase.initialize_app(firebaseConfig)
     storage = firebase_storage.storage()
 except ServerNotFoundError:
-    error = load_lottiefile("lotties/error.json")
-    st_lottie(error)
+    st.error("Connection Error")
 
 
 def upload_to_firestore(filename, file):

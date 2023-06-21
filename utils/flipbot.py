@@ -1,4 +1,3 @@
-import os
 import pickle
 import tempfile
 
@@ -12,7 +11,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from utils.firebase import storage, upload_to_firestore
+from firebase import storage, upload_to_firestore
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
