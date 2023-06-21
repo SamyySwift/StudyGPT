@@ -127,7 +127,7 @@ def main():
 
     add_vertical_space(3)
 
-    st.subheader("Interact with # :blue[Flip]:red[Bot]")
+    st.subheader("Interact with :blue[Flip]:red[Bot]")
     # Create tabs
     tab1, tab2 = st.tabs(["Ask FlipBot", "Practice Quiz"])
 
