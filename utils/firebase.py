@@ -1,5 +1,4 @@
 import pyrebase
-import pickle
 
 firebaseConfig = {
     "apiKey": "AIzaSyB6mhQJR3zKAh7XP4GX8YxgDXadgPlguac",
@@ -20,26 +19,20 @@ def upload_to_firestore(filename, file):
     print("--Done Uploading")
 
 
-# def retrieve_path(folder_path):
-#     files = storage.bucket.list_blobs(prefix=folder_path)
-#     persist_dir = ""
-#     for file in files:
-#         # Skip the folder itself
-#         if file.name == folder_path:
-#             continue
-#         # Extract the file name without the folder path
-#         file_name = file.name.replace(folder_path + "/", "")[:4]
-
-#         persist_dir += file_name + "+"
-#     # Remove the trailing "+" symbol if any
-#     if persist_dir.endswith("+"):
-#         persist_dir = persist_dir[:-1]
-#     return persist_dir[1:]
-
-
 def folder_exist(folder_name):
     print("--Checking for folder")
     blobs = storage.list_files()
     for f in blobs:
         if f.name == f"{folder_name}":
             return True
+
+
+# import tempfile
+# import pickle
+
+# temp_file = tempfile.NamedTemporaryFile(delete=False)
+# storage.download("EEE4", temp_file.name)
+# with open(temp_file.name, "rb") as file:
+#     loaded_vectordb = pickle.load(file)
+
+# print(loaded_vectordb)

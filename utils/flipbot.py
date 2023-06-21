@@ -74,9 +74,6 @@ def create_vectordb(persist_dir: str, files):
         # Save the vectorstore to the temporary file
         with open(temp_file.name, "wb") as f:
             pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
-
-        # Upload the temporary file to Firestore
-        # storage.child(f"{persist_dir}.pkl").put(temp_file.name)
         upload_to_firestore(persist_dir, f"{temp_file.name}")
     temp_file.close()
 
@@ -85,6 +82,7 @@ def create_vectordb(persist_dir: str, files):
 
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
+    print(persist_dir)
     temp_file = tempfile.NamedTemporaryFile(delete=False)
     storage.download(persist_dir, temp_file.name)
     with open(temp_file.name, "rb") as file:
