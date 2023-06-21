@@ -38,7 +38,7 @@ def download_from_firestore(storage_file, filename):
     st.session_state.storage.download(storage_file, filename)
 
 
-def folder_exist(folder_name):
+def folder_exist(file_name):
     if "firebase_storage" not in st.session_state:
         st.session_state.firebase_storage = pyrebase.initialize_app(firebaseConfig)
     if "storage" not in st.session_state:
@@ -47,5 +47,5 @@ def folder_exist(folder_name):
     print("--Checking for folder")
     blobs = st.session_state.storage.list_files()
     for f in blobs:
-        if f.name == f"{folder_name}":
+        if f.name == f"{file_name}_index.pkl":
             return True
