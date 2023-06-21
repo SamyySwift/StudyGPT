@@ -70,6 +70,7 @@ def create_vectordb(persist_dir: str, files):
 
 # @st.cache_resource
 def load_vectordb(persist_dir: str):
+    st.write(persist_dir)
     print("--Loading Index")
     temp_file = tempfile.NamedTemporaryFile(delete=False)
     try:
