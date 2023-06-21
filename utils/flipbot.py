@@ -58,12 +58,12 @@ def create_vectordb(persist_dir: str, files):
     text_chunks = load_and_split_doc(files)
 
     vectorstore = FAISS.from_documents(text_chunks, embeddings)
-    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        # Save the vectorstore to the temporary file
-        with open(temp_file.name, "wb") as f:
-            pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
-        upload_to_firestore(persist_dir, f"{temp_file.name}")
-    temp_file.close()
+    # with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+    # Save the vectorstore to the temporary file
+    with open(f"{persist_dir}.pkl", "wb") as f:
+        pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
+    upload_to_firestore(f"{persist_dir}_index.pkl", f"{persist_dir}.pkl")
+    # temp_file.close()
 
     return vectorstore
 
@@ -73,11 +73,9 @@ def load_vectordb(persist_dir: str):
     print("--Loading Index")
     # temp_file = tempfile.NamedTemporaryFile(delete=False)
     try:
-        download_from_firestore(persist_dir, f"{persist_dir}.pkl")
-        st.write("Downloaded")
+        download_from_firestore(f"{persist_dir}_index.pkl", f"{persist_dir}.pkl")
         with open(f"{persist_dir}.pkl", "rb") as file:
             loaded_vectordb = pickle.load(file)
-        # temp_file.close()
 
         return loaded_vectordb
     except AttributeError:

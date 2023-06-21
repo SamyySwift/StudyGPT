@@ -99,11 +99,6 @@ def main():
     uploaded_files = st.file_uploader(
         ":blue[Upload your documents]", accept_multiple_files=True
     )
-    # col3, col4 = st.columns(2)
-    # # with col3:
-    # #     doc_type = st.checkbox("Is document scanned?", value=False)
-    # with col3:
-    #     scan = st.checkbox("Scan Over Documents", value=False)
 
     if st.button("Index Docs"):
         if uploaded_files is not None:
