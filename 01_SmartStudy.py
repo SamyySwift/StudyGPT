@@ -114,14 +114,14 @@ def main():
                 display_alert("Document is already Indexed!")
                 with st.spinner("Loading Index..."):
                     vectordb = load_vectordb(persist_dir)
-                if "vectordb" not in st.session_state:
-                    st.session_state.vectordb = vectordb
+                    if "vectordb" not in st.session_state:
+                        st.session_state.vectordb = vectordb
 
             else:
                 with st.spinner("Indexing your documents..."):
                     vectordb = create_vectordb(persist_dir, uploaded_files)
-                if "vectordb" not in st.session_state:
-                    st.session_state.vectordb = vectordb
+                    if "vectordb" not in st.session_state:
+                        st.session_state.vectordb = vectordb
                 display_alert("Done Indexing!")
         else:
             display_alert("Upload files before indexing!", icon="warning")

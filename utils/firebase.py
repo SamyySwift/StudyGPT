@@ -1,4 +1,8 @@
 import pyrebase
+from httplib2 import ServerNotFoundError
+import streamlit as st
+from streamlit_lottie import st_lottie
+from utils.config import load_lottiefile
 
 firebaseConfig = {
     "apiKey": "AIzaSyB6mhQJR3zKAh7XP4GX8YxgDXadgPlguac",
@@ -9,9 +13,12 @@ firebaseConfig = {
     "serviceAccount": "utils/serviceAccountKey.json",
 }
 
-
-firebase_storage = pyrebase.initialize_app(firebaseConfig)
-storage = firebase_storage.storage()
+try:
+    firebase_storage = pyrebase.initialize_app(firebaseConfig)
+    storage = firebase_storage.storage()
+except ServerNotFoundError:
+    error = load_lottiefile("lotties/error.json")
+    st_lottie(error)
 
 
 def upload_to_firestore(filename, file):
@@ -25,14 +32,3 @@ def folder_exist(folder_name):
     for f in blobs:
         if f.name == f"{folder_name}":
             return True
-
-
-# import tempfile
-# import pickle
-
-# temp_file = tempfile.NamedTemporaryFile(delete=False)
-# storage.download("EEE4", temp_file.name)
-# with open(temp_file.name, "rb") as file:
-#     loaded_vectordb = pickle.load(file)
-
-# print(loaded_vectordb)

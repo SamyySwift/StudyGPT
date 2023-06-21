@@ -1,4 +1,6 @@
 import os
+import pickle
+import tempfile
 
 import streamlit as st
 from langchain.callbacks import get_openai_callback
@@ -8,16 +10,13 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma, FAISS
-import pickle
+from langchain.vectorstores import FAISS
 
-from utils.firebase import upload_to_firestore, storage
-import tempfile
-
+from utils.firebase import storage, upload_to_firestore
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
-
+seperator = "+"
 # class questionAnswer:
 #     def __init__(self) -> None:
 #         # key = key
@@ -26,7 +25,6 @@ OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 #         files = os.listdir("docs")
 #         texts = ""
 
-# files = storage.bucket.list_blobs(prefix="Documents/")
 
 llm = OpenAI()
 embeddings = OpenAIEmbeddings()
@@ -47,7 +45,7 @@ def load_and_split_doc(pdf_files):
     for file in pdf_files:
         file_data = file.getvalue()
         with tempfile.NamedTemporaryFile(
-            delete=False, suffix=f"{file.name}"
+            delete=False, suffix=f"{seperator}{file.name}"
         ) as temp_file:
             temp_file.write(file_data)
 
@@ -80,9 +78,9 @@ def create_vectordb(persist_dir: str, files):
     return vectorstore
 
 
+@st.cache_resource
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
-    print(persist_dir)
     temp_file = tempfile.NamedTemporaryFile(delete=False)
     storage.download(persist_dir, temp_file.name)
     with open(temp_file.name, "rb") as file:
@@ -107,7 +105,7 @@ def query(query, vectordb, source=False):
     if source:
         for document in result["source_documents"]:
             sources.append(
-                f"Retrieved answers from {document.metadata['source']} at Page:{document.metadata['page']}\n"
+                f"Retrieved answer from --> {document.metadata['source']} at Page: {document.metadata['page']}\n\n"
             )
         return f"StudyGPT Response: {response} \n\nCited Sources:\n{' '.join(sources)}"
     else:
