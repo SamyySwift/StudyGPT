@@ -1,20 +1,15 @@
 import os
+from dataclasses import dataclass
+from typing import Literal
 
 import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_lottie import st_lottie
 
-# from streamlit_pills import pills
-from dataclasses import dataclass
-from typing import Literal
 from utils.config import display_alert, load_lottiefile
-
-# from utils.extract import extract_text, process_scanned_documents
+from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, load_vectordb, query
-
-# from utils.firebase import upload_to_firestore, storage, retrieve_path
-
 
 # -------------------------------- PAGE SETUP --------------------------------------------
 st.set_page_config(layout="centered", page_icon="👦", page_title="FlipBot")
@@ -103,7 +98,7 @@ def main():
 
     st.subheader("Upload files for indexing")
     uploaded_files = st.file_uploader(
-        ":blue[Upload your documents]", accept_multiple_files=True, type="pdf"
+        ":blue[Upload your documents]", accept_multiple_files=True
     )
     col3, col4 = st.columns(2)
     # with col3:
@@ -111,23 +106,11 @@ def main():
     with col3:
         scan = st.checkbox("Scan Over Documents", value=False)
 
-    # if uploaded_file:
-    #     for file in uploaded_file:
-    #         file_name = file.name
-    # if "file_name" not in st.session_state:
-    #     st.session_state.file_name = file_name
-    # if doc_type:
-    #     with open(f"scanned_docs/{file_name}", "wb") as f:
-    #         f.write(file.read())
-    #     process_scanned_documents()
-    #     extract_text()
-    # upload_to_firestore(file_name, file.read())
-
     if st.button("Index Docs"):
-        persist_dir = "+".join(file.name[:4] for file in uploaded_files)
+        if uploaded_files is not None:
+            persist_dir = "+".join(file.name[:4] for file in uploaded_files)
 
-        if persist_dir != "":
-            if os.path.exists(persist_dir):
+            if folder_exist(persist_dir):
                 display_alert("Document is already Indexed!")
                 with st.spinner("Loading Index..."):
                     vectordb = load_vectordb(persist_dir)

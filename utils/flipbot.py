@@ -7,17 +7,12 @@ from langchain.document_loaders import PyPDFLoader, UnstructuredPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.text_splitter import (
-    RecursiveCharacterTextSplitter,
-    CharacterTextSplitter,
-)
-from langchain.vectorstores import Chroma
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma, FAISS
+import pickle
 
-
-# from utils.firebase import storage
+from utils.firebase import upload_to_firestore, storage
 import tempfile
-from PyPDF2 import PdfReader
-import io
 
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
@@ -74,19 +69,25 @@ def create_vectordb(persist_dir: str, files):
     print("--Creating Index")
     text_chunks = load_and_split_doc(files)
 
-    vectorstore = Chroma.from_documents(
-        text_chunks, embeddings, persist_directory=persist_dir
-    )
-    vectorstore.persist()
+    vectorstore = FAISS.from_documents(text_chunks, embeddings)
+    with open(f"{persist_dir}.pkl", "wb") as f:
+        pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+    upload_to_firestore(persist_dir, f"{persist_dir}.pkl")
+    os.remove(f"{persist_dir}.pkl")
     return vectorstore
 
 
-@st.cache_resource
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
-    loaded_vectordb = Chroma(
-        persist_directory=persist_dir, embedding_function=embeddings
-    )
+    # loaded_vectordb = Chroma(
+    #     persist_directory=persist_dir, embedding_function=embeddings
+    # )
+    storage.download(persist_dir, f"{persist_dir}.pkl")
+    print("Done Downloading")
+
+    with open(f"{persist_dir}.pkl", "rb") as file:
+        loaded_vectordb = pickle.load(file)
 
     return loaded_vectordb
 
