@@ -9,9 +9,9 @@ from streamlit_lottie import st_lottie
 from utils.config import display_alert, load_lottiefile
 from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, load_vectordb, query
-import PIL
+from PIL import Image
 
-im = PIL.open("static/letter-f.png")
+im = Image.open("static/letter-f.png")
 
 # -------------------------------- PAGE SETUP --------------------------------------------
 st.set_page_config(layout="centered", page_icon=im, page_title="FlipBot")
