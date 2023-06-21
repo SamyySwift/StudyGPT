@@ -35,7 +35,7 @@ def load_and_split_doc(pdf_files):
     for file in pdf_files:
         file_data = file.getvalue()
         with tempfile.NamedTemporaryFile(
-            delete=False, suffix=f"{file.name}"
+            delete=False, suffix=f"+{file.name}"
         ) as temp_file:
             temp_file.write(file_data)
 
@@ -103,7 +103,7 @@ def query(query, vectordb, source=False):
     if source:
         for document in result["source_documents"]:
             sources.append(
-                f"Retrieved answer from --> {document.metadata['source']} at Page: {document.metadata['page']}\n\n"
+                f"Retrieved answer from --> {''.join(document.metadata['source'].split('+')[1:])} at Page: {document.metadata['page']}\n\n"
             )
         return f"StudyGPT Response: {response} \n\nCited Sources:\n{' '.join(sources)}"
     else:
