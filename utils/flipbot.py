@@ -29,15 +29,6 @@ llm = OpenAI()
 embeddings = OpenAIEmbeddings()
 
 
-if "memory" not in st.session_state:
-    st.session_state.memory = ConversationBufferMemory(
-        input_key="question",
-        output_key="answer",
-        memory_key="chat_history",
-        return_messages=True,
-    )
-
-
 def load_and_split_doc(pdf_files):
     loaders = []
 
@@ -91,6 +82,14 @@ def load_vectordb(persist_dir: str):
 
 def query(query, vectordb, source=False):
     sources = []
+
+    if "memory" not in st.session_state:
+        st.session_state.memory = ConversationBufferMemory(
+            input_key="question",
+            output_key="answer",
+            memory_key="chat_history",
+            return_messages=True,
+        )
     qa = ConversationalRetrievalChain.from_llm(
         llm=llm,
         memory=st.session_state.memory,
