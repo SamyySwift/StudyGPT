@@ -63,7 +63,6 @@ def create_vectordb(persist_dir: str, files):
     with open(f"{persist_dir}.pkl", "wb") as f:
         pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
     upload_to_firestore(f"{persist_dir}_index.pkl", f"{persist_dir}.pkl")
-    # temp_file.close()
 
     return vectorstore
 
