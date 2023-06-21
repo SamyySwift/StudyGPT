@@ -144,12 +144,18 @@ def main():
         with chat_placeholder:
             for chat in st.session_state.history:
                 div = f"""
-                <img class="chat-icon" src="app/static/{'ai_icon.png' if chat.origin == 'ai' else 'user.png'}" width=32 height=32>
-                <span class="chat-bubble {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-                &#8203;{chat.message}
-                </span>
-            """
-
+            <div class="chat-row 
+                    {'' if chat.origin == 'ai' else 'row-reverse'}">
+                    <img class="chat-icon" src="app/static/{
+                        'ai_icon.png' if chat.origin == 'ai' 
+                                    else 'user.png'}"
+                        width=32 height=32>
+                    <div class="chat-bubble
+                    {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
+                        &#8203;{chat.message}
+                    </div>
+            </div>
+                    """
                 st.markdown(div, unsafe_allow_html=True)
 
         # Display a text input widget
