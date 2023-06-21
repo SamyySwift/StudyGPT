@@ -33,14 +33,11 @@ def load_and_split_doc(pdf_files):
     loaders = []
 
     for file in pdf_files:
-        file_data = file.getvalue()
-        with tempfile.NamedTemporaryFile(
-            delete=False, suffix=f"+{file.name}"
-        ) as temp_file:
-            temp_file.write(file_data)
+        file_data = file.read()
+        with open(f"{file.name}", "wb") as f:
+            f.write(file_data)
 
-        loaders.append(PyPDFLoader(temp_file.name))
-        temp_file.close()
+        loaders.append(PyPDFLoader(file.name))
 
     docs = []
     for loader in loaders:
@@ -58,8 +55,6 @@ def create_vectordb(persist_dir: str, files):
     text_chunks = load_and_split_doc(files)
 
     vectorstore = FAISS.from_documents(text_chunks, embeddings)
-    # with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-    # Save the vectorstore to the temporary file
     with open(f"{persist_dir}.pkl", "wb") as f:
         pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
     upload_to_firestore(f"{persist_dir}_index.pkl", f"{persist_dir}.pkl")
@@ -70,7 +65,6 @@ def create_vectordb(persist_dir: str, files):
 # @st.cache_resource
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
-    # temp_file = tempfile.NamedTemporaryFile(delete=False)
     try:
         download_from_firestore(f"{persist_dir}_index.pkl", f"{persist_dir}.pkl")
         with open(f"{persist_dir}.pkl", "rb") as file:

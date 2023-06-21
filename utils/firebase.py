@@ -1,5 +1,4 @@
 import pyrebase
-from httplib2 import ServerNotFoundError
 import streamlit as st
 
 service_key = {
