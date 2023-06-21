@@ -74,6 +74,7 @@ def load_vectordb(persist_dir: str):
     # temp_file = tempfile.NamedTemporaryFile(delete=False)
     try:
         download_from_firestore(persist_dir, f"{persist_dir}.pkl")
+        st.write("Downloaded")
         with open(f"{persist_dir}.pkl", "rb") as file:
             loaded_vectordb = pickle.load(file)
         # temp_file.close()
