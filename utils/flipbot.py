@@ -70,14 +70,13 @@ def create_vectordb(persist_dir: str, files):
 
 # @st.cache_resource
 def load_vectordb(persist_dir: str):
-    st.write(persist_dir)
     print("--Loading Index")
-    temp_file = tempfile.NamedTemporaryFile(delete=False)
+    # temp_file = tempfile.NamedTemporaryFile(delete=False)
     try:
-        storage.download(persist_dir, temp_file.name)
-        with open(temp_file.name, "rb") as file:
+        storage.download(persist_dir, f"{persist_dir}.pickle")
+        with open(f"{persist_dir}.pickle", "rb") as file:
             loaded_vectordb = pickle.load(file)
-        temp_file.close()
+        # temp_file.close()
 
         return loaded_vectordb
     except AttributeError:
