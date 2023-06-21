@@ -29,7 +29,6 @@ firebaseConfig = {
 }
 
 
-@st.cache_resource
 def init_firebase(firebaseConfig):
     try:
         firebase_storage = pyrebase.initialize_app(firebaseConfig)
