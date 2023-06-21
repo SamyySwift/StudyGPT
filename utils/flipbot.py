@@ -70,24 +70,26 @@ def create_vectordb(persist_dir: str, files):
     text_chunks = load_and_split_doc(files)
 
     vectorstore = FAISS.from_documents(text_chunks, embeddings)
-    with open(f"{persist_dir}.pkl", "wb") as f:
-        pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        # Save the vectorstore to the temporary file
+        with open(temp_file.name, "wb") as f:
+            pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)
 
-    upload_to_firestore(persist_dir, f"{persist_dir}.pkl")
-    os.remove(f"{persist_dir}.pkl")
+        # Upload the temporary file to Firestore
+        # storage.child(f"{persist_dir}.pkl").put(temp_file.name)
+        upload_to_firestore(persist_dir, f"{temp_file.name}")
+    temp_file.close()
+
     return vectorstore
 
 
 def load_vectordb(persist_dir: str):
     print("--Loading Index")
-    # loaded_vectordb = Chroma(
-    #     persist_directory=persist_dir, embedding_function=embeddings
-    # )
-    storage.download(persist_dir, f"{persist_dir}.pkl")
-    print("Done Downloading")
-
-    with open(f"{persist_dir}.pkl", "rb") as file:
+    temp_file = tempfile.NamedTemporaryFile(delete=False)
+    storage.download(persist_dir, temp_file.name)
+    with open(temp_file.name, "rb") as file:
         loaded_vectordb = pickle.load(file)
+    temp_file.close()
 
     return loaded_vectordb
 
