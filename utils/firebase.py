@@ -1,7 +1,6 @@
 import pyrebase
 from httplib2 import ServerNotFoundError
 import streamlit as st
-from streamlit_lottie import st_lottie
 import os
 
 key_path = os.path.join("utils", "serviceAccountKey.json")
