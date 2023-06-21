@@ -2,7 +2,10 @@ import pyrebase
 from httplib2 import ServerNotFoundError
 import streamlit as st
 from streamlit_lottie import st_lottie
-from utils.config import load_lottiefile
+from config import load_lottiefile
+import os
+
+key_path = os.path.join("utils", "serviceAccountKey.json")
 
 firebaseConfig = {
     "apiKey": "AIzaSyB6mhQJR3zKAh7XP4GX8YxgDXadgPlguac",
@@ -10,7 +13,7 @@ firebaseConfig = {
     "projectId": "flipbot-4f922",
     "storageBucket": "flipbot-4f922.appspot.com",
     "databaseURL": "",
-    "serviceAccount": "utils/serviceAccountKey.json",
+    "serviceAccount": key_path,
 }
 
 try:
