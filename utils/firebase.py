@@ -46,7 +46,7 @@ def download_from_firestore(storage_file, filename):
 
 def folder_exist(folder_name):
     print("--Checking for folder")
-    blobs = st.session_state.storage.list_files()
+    blobs = storage.list_files()
     for f in blobs:
         if f.name == f"{folder_name}":
             return True
