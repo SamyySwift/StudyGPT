@@ -11,6 +11,9 @@ firebaseConfig = {
     "projectId": "flipbot-4f922",
     "storageBucket": "flipbot-4f922.appspot.com",
     "databaseURL": "",
+    "messagingSenderId": "37185214139",
+    "appId": "1:37185214139:web:5d530ebd8f8373b8877b9e",
+    "measurementId": "G-SQTDYT12Z8",
     "serviceAccount": key_path,
 }
 
