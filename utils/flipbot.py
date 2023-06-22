@@ -96,10 +96,10 @@ def query(query, vectordb, source=False):
     response = result["answer"]
 
     if source:
-        for document in result["source_documents"][:3]:
+        for document in result["source_documents"][:2]:
             sources.append(
                 f"Retrieved answer from --> {document.metadata['source']} at Page: {document.metadata['page']}\n\n"
             )
-        return f"StudyGPT Response: {response} \n\nCited Sources:\n{' '.join(sources)}"
+        return f"FlipBot: {response} \n\nCited Sources: \n\n{' '.join(sources)}"
     else:
-        return response
+        return f"FlipBot: {response}"
