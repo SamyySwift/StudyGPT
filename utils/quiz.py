@@ -47,10 +47,10 @@ def clear_fields():
     st.session_state.txt = ""
 
 
-def reset_quiz(length):
+def reset_quiz():
     delete_question()
     st.session_state.response = ""
-    st.session_state.user_responses = [0] * length
+    # st.session_state.user_responses = [0] * length
     st.session_state.count = 0
 
 
@@ -183,4 +183,4 @@ def present_quiz(query, questions):
                     st.write(q)
                     st.write(f":green[Correct Answer: {a}]")
 
-                st.button("Reset Quiz", on_click=reset_quiz(length))
+                st.button("Reset Quiz", on_click=reset_quiz())

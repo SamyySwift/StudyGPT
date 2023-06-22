@@ -100,6 +100,6 @@ def query(query, vectordb, source=False):
             sources.append(
                 f"Retrieved answer from --> {document.metadata['source']} at Page: {document.metadata['page']}\n\n"
             )
-        return f"FlipBot: {response} \n\nCited Sources: \n\n{' '.join(sources)}"
+        return f"FlipBot: {response} \n\nCited Sources:\n\n{' '.join(sources)}"
     else:
         return f"FlipBot: {response}"

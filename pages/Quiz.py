@@ -4,6 +4,7 @@ import os
 from streamlit_extras.add_vertical_space import add_vertical_space
 from utils.config import display_alert
 from utils.flipbot import query
+from utils.quiz import reset_quiz
 
 
 st.header(":blue[Practice] :red[Quiz]")
@@ -20,6 +21,9 @@ except AttributeError:
     display_alert("Please ensure that you have indexed your documents", icon="warning")
 if "quiz_questions" not in st.session_state:
     st.session_state.quiz_questions = ""
+
+with st.sidebar:
+    st.button("Reset Quiz", on_click=reset_quiz())
 
 
 def clear_quiz_query():
