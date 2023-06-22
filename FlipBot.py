@@ -105,7 +105,7 @@ def main():
     # st.camera_input(label="Take Picture")
 
     try:
-        if st.button("Index Docs"):
+        if st.button("Index Documents"):
             if uploaded_files is not None:
                 persist_dir = "+".join(file.name[:4] for file in uploaded_files)
 
