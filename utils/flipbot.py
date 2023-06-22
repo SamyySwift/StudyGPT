@@ -96,7 +96,7 @@ def query(query, vectordb, source=False):
     response = result["answer"]
 
     if source:
-        for document in result["source_documents"][:2]:
+        for document in result["source_documents"][:1]:
             sources.append(
                 f"Retrieved answer from --> {document.metadata['source']} at Page: {document.metadata['page']}\n\n"
             )
