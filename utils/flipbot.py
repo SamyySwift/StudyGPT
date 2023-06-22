@@ -4,7 +4,7 @@ import tempfile
 import streamlit as st
 from langchain.callbacks import get_openai_callback
 from langchain.chains import ConversationalRetrievalChain
-from langchain.document_loaders import PyPDFLoader, UnstructuredPDFLoader
+from langchain.document_loaders import PyPDFLoader, TextLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
