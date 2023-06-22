@@ -102,6 +102,7 @@ def main():
     uploaded_files = st.file_uploader(
         ":blue[Upload your documents]", accept_multiple_files=True
     )
+    # st.camera_input(label="Take Picture")
 
     if st.button("Index Docs"):
         if uploaded_files is not None:

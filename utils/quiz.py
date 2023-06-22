@@ -183,4 +183,4 @@ def present_quiz(query, questions):
                     st.write(q)
                     st.write(f":green[Correct Answer: {a}]")
 
-                st.button("Reset Quiz", on_click=reset_quiz())
+                # st.button("Reset Quiz", on_click=reset_quiz())
