@@ -102,4 +102,4 @@ def query(query, vectordb, source=False):
             )
         return f"FlipBot: {response} \n\nCited Sources:\n\n{' '.join(sources)}"
     else:
-        return f"FlipBot: {response}"
+        return response
