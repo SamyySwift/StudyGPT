@@ -104,24 +104,27 @@ def main():
     )
     # st.camera_input(label="Take Picture")
 
-    if uploaded_files is not None:
+    try:
         if st.button("Index Docs"):
-            persist_dir = "+".join(file.name[:4] for file in uploaded_files)
+            if uploaded_files is not None:
+                persist_dir = "+".join(file.name[:4] for file in uploaded_files)
 
-            if folder_exist(persist_dir):
-                display_alert("Document is already Indexed!")
-                with st.spinner("Loading Index..."):
-                    vectordb = load_vectordb(persist_dir)
-                    if "vectordb" not in st.session_state:
-                        st.session_state.vectordb = vectordb
+                if folder_exist(persist_dir):
+                    display_alert("Document is already Indexed!")
+                    with st.spinner("Loading Index..."):
+                        vectordb = load_vectordb(persist_dir)
+                        if "vectordb" not in st.session_state:
+                            st.session_state.vectordb = vectordb
 
+                else:
+                    with st.spinner("Indexing your documents..."):
+                        vectordb = create_vectordb(persist_dir, uploaded_files)
+                        if "vectordb" not in st.session_state:
+                            st.session_state.vectordb = vectordb
+                    display_alert("Done Indexing!")
             else:
-                with st.spinner("Indexing your documents..."):
-                    vectordb = create_vectordb(persist_dir, uploaded_files)
-                    if "vectordb" not in st.session_state:
-                        st.session_state.vectordb = vectordb
-                display_alert("Done Indexing!")
-    else:
+                display_alert("Upload files before indexing!", icon="warning")
+    except IndexError:
         display_alert("Upload files before indexing!", icon="warning")
 
     add_vertical_space(3)
