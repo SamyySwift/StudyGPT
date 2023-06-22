@@ -11,7 +11,7 @@ from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, load_vectordb, query
 from PIL import Image
 
-im = Image.open("static/letter-f.png")
+im = Image.open("static/logo.jpeg")
 
 # -------------------------------- PAGE SETUP --------------------------------------------
 st.set_page_config(layout="centered", page_icon=im, page_title="FlipBot")
