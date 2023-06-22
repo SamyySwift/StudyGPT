@@ -104,8 +104,8 @@ def main():
     )
     # st.camera_input(label="Take Picture")
 
-    if st.button("Index Docs"):
-        if uploaded_files is not None:
+    if uploaded_files is not None:
+        if st.button("Index Docs"):
             persist_dir = "+".join(file.name[:4] for file in uploaded_files)
 
             if folder_exist(persist_dir):
@@ -121,8 +121,8 @@ def main():
                     if "vectordb" not in st.session_state:
                         st.session_state.vectordb = vectordb
                 display_alert("Done Indexing!")
-        else:
-            display_alert("Upload files before indexing!", icon="warning")
+    else:
+        display_alert("Upload files before indexing!", icon="warning")
 
     add_vertical_space(3)
 
