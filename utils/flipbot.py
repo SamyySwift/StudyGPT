@@ -38,11 +38,11 @@ def load_and_split_doc(pdf_files):
             with open(f"{file.name}", "wb") as f:
                 f.write(file_data)
             loaders.append(PyPDFLoader(file.name))
-        elif file.name.endswith(".txt"):
-            file_data = file.read()
-            with open(f"{file.name}", "w") as f:
-                f.write(file_data.decode("latin-1"))
-            loaders.append(TextLoader(file.name))
+        # elif file.name.endswith(".txt"):
+        #     file_data = file.read()
+        #     with open(f"{file.name}", "w") as f:
+        #         f.write(file_data.decode("latin-1"))
+        #     loaders.append(TextLoader(file.name))
 
     docs = []
     for loader in loaders:
