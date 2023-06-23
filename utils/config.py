@@ -31,7 +31,7 @@ def display_alert(message, icon="info"):
 
 def matching_notification():
     card(
-        title="Matching Alert⚠️",
+        title="Matching Alert",
         text="Some other user uploaded this exact document, would you like to study together?",
         image="https://firebasestorage.googleapis.com/v0/b/flipbot-4f922.appspot.com/o/WhatsApp%20Image%202023-06-22%20at%209.25.18%20AM.jpeg?alt=media&token=031d8a01-5aad-4c23-b296-220fa7c8df84",
         url="https://www.google.com",
