@@ -127,7 +127,7 @@ def main():
 
                 if folder_exist(persist_dir):
                     st.success("🔔There's a match🎉. Would you like to study together?")
-                    if st.button("GO"):
+                    if button("GO", key="sb"):
                         switch_page("StudyBuddy")
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
