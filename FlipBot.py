@@ -134,8 +134,9 @@ def main():
                         icons=["👎", "👍"],
                         index=None,
                     )
-                    st.write(option)
-                    if option == "YES":
+                    if "option" not in st.session_state:
+                        st.session_state.option = option
+                    if st.session_state.option == "YES":
                         switch_page("StudyBuddy")
 
                     # display_alert("Document is already Indexed!")

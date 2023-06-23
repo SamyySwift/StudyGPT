@@ -41,7 +41,7 @@ if "chat_hist" not in st.session_state:
     st.session_state.chat_hist = []
 
 
-def chat():
+def chat_func():
     if st.session_state.chat_query:
         human_prompt = st.session_state.chat_query
         # chatgpt_response = query(
@@ -52,7 +52,7 @@ def chat():
         st.session_state.chat_hist.append(chatMessage("human", human_prompt))
         # st.session_state.history.append(Message("ai", chatgpt_response))
 
-    st.session_state.chat_query = ""
+    # st.session_state.chat_query = ""
 
 
 chat_placeholder = st.container()
@@ -79,7 +79,7 @@ add_vertical_space(2)
 st.subheader("Chat With Buddy")
 st.text_input(
     ":blue[Chat with your buddy]",
-    placeholder="Ask questions based on your uploaded materials...",
-    on_change=chat,
+    placeholder="Type a message...",
+    on_change=chat_func,
     key="chat_query",
 )
