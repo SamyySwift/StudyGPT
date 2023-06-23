@@ -5,11 +5,12 @@ import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_lottie import st_lottie
-
-from utils.config import display_alert, load_lottiefile
+from utils.extract import extract_text
+from utils.config import display_alert, load_lottiefile, matching_notification
 from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, load_vectordb, query
 from PIL import Image
+
 
 im = Image.open("static/logo.png")
 
@@ -18,7 +19,6 @@ st.set_page_config(layout="centered", page_icon=im, page_title="FlipBot")
 
 with open("static/style.css") as f:
     st.markdown(f"<style>{f.read()}<\style>", unsafe_allow_html=True)
-
 
 # -------------------------------- SIDEBAR ------------------------------------------------
 with st.sidebar:
@@ -85,9 +85,13 @@ def clear_main_query():
     st.session_state.main_query = ""
 
 
-def main():
-    # if st.session_state.get("OPENAI_API_KEY"):
+def process_cam_input(image):
+    bytes_data = image.getvalue()
+    text = extract_text(bytes_data)
+    st.write(text)
 
+
+def main():
     col1, col2 = st.columns([2, 4])
     with col1:
         lottie_bot = load_lottiefile("lotties/robot.json")
@@ -102,14 +106,25 @@ def main():
     uploaded_files = st.file_uploader(
         ":blue[Upload your documents]", accept_multiple_files=True
     )
-    # st.camera_input(label="Take Picture")
+    col3, col4 = st.columns([2, 7])
+    with col3:
+        index_btn = st.button("Index Documents")
+    with col4:
+        if st.button("Use Camera"):
+            image = st.camera_input(label="Capture")
+            if image is not None:
+                st.write("image captured")
+                process_cam_input(image)
+            # else:
+            #     display_alert("Take an Image")
 
     try:
-        if st.button("Index Documents"):
+        if index_btn:
             if uploaded_files is not None:
-                persist_dir = "+".join(file.name[:4] for file in uploaded_files)
+                persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
+                    matching_notification()
                     display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)

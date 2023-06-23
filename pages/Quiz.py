@@ -46,7 +46,7 @@ def clear_quiz_query():
 
 
 st.text_input(
-    ":blue[Ask StudyGPT to generate practice questions for you]",
+    ":blue[Ask FlipBot to generate practice questions for you]",
     placeholder="",
     key="quiz_query",
     on_change=clear_quiz_query,
