@@ -112,6 +112,7 @@ def main():
     with col4:
         if st.button("Use Camera"):
             image = st.camera_input(label="Capture")
+            st.write(image)
             if image:
                 st.write("image captured")
                 process_cam_input(image)
