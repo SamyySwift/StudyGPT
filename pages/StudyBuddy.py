@@ -25,8 +25,11 @@ uploaded_file = st.file_uploader(
     ":blue[share files with your buddy]", accept_multiple_files=True
 )
 share_button = st.button("Share")
+st.markdown("---")
 if share_button and uploaded_file:
     st.success("File Sent!")
+elif share_button and uploaded_file is None:
+    st.warning("upload files before sharing")
 
 
 @dataclass
@@ -52,7 +55,7 @@ def chat_func():
         st.session_state.chat_hist.append(chatMessage("human", human_prompt))
         # st.session_state.history.append(Message("ai", chatgpt_response))
 
-    # st.session_state.chat_query = ""
+    st.session_state.chat_query = ""
 
 
 chat_placeholder = st.container()
