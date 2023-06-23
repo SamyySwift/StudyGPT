@@ -8,7 +8,7 @@ from streamlit_extras.stateful_button import button
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_lottie import st_lottie
 
-from utils.config import display_alert, display_animation, matching_notification
+from utils.config import display_alert, load_lottiefile, matching_notification
 from utils.extract import extract_text
 from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, index_cam_input, load_vectordb, query
@@ -100,7 +100,9 @@ def process_cam_input(image):
 def main():
     col1, col2 = st.columns([2, 4])
     with col1:
-        display_animation("lotties/robot.json")
+        # display_animation("lotties/robot.json")
+        lottie_bot = load_lottiefile("lotties/robot.json")
+        st_lottie(lottie_bot)
 
     with col2:
         st.markdown("# :blue[Flip]:red[Bot]")
