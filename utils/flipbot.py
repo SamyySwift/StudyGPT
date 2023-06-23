@@ -41,7 +41,7 @@ def load_and_split_doc(pdf_files):
         elif file.name.endswith(".txt"):
             file_data = file.read()
             with open(f"{file.name}", "w") as f:
-                f.write(file_data.decode("utf-8"))
+                f.write(file_data.decode("latin-1"))
             loaders.append(TextLoader(file.name))
 
     docs = []
