@@ -5,15 +5,22 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 from utils.config import display_alert
 from utils.flipbot import query
 from utils.quiz import reset_quiz
+from utils.config import display_animation
 
 
-st.header(":blue[Practice] :red[Quiz]")
+col1, col2 = st.columns([2, 4])
+with col1:
+    display_animation("lotties/quiz.json")
+
+with col2:
+    st.markdown("# :blue[Practice] :red[Quiz]")
+    st.markdown("**:blue[Your personal AI examiner]**")
 st.markdown(
     "**:blue[Flip]:red[Bot]** can generate both :orange[theoritical] and :red[mulitichoice] questions for you 😉 based on your provided documents. \
     It also evaluates and grades your performance after completing a quiz.  \n :blue[Psst!] You'll need to score at least :green[50%] to pass the quiz."
 )
-st.markdown("---")
-add_vertical_space(1)
+
+add_vertical_space(2)
 
 try:
     return_source = st.session_state.return_source

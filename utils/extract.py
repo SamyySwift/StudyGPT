@@ -9,7 +9,7 @@ import os
 import numpy as np
 
 
-# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract"
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract"
 # path = r"C:\path-files\poppler-23.01.0\Library\bin"
 
 
@@ -33,7 +33,7 @@ def thresholding(image):
 #             images[i].save(f"pdf_2_image/{os.path.basename(pdf)}_{i}.jpg", "JPEG")
 
 
-def extract_text(bytes_data):
+def extract_text(bytes_data, file_name):
     # extracted_images = glob.glob("pdf_2_image\**.jpg")
     all_text = ""
     # for img in extracted_images:
@@ -43,6 +43,6 @@ def extract_text(bytes_data):
     # blurred = remove_noise(gray)
     # thresh = thresholding(gray)
     all_text += pytesseract.image_to_string(gray)
-    return all_text
-    # with open(f"docs/text.txt", "w") as f:
-    #     f.write(all_text)
+
+    with open(f"{file_name}.txt", "w") as f:
+        f.write(all_text)

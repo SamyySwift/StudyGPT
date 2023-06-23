@@ -50,10 +50,18 @@ def load_and_split_doc(pdf_files):
     return chunks
 
 
+def index_cam_input(fname):
+    loader = TextLoader(f"{fname}.txt")
+    docs = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    chunks = text_splitter.split_documents(docs)
+    vectorstore = FAISS.from_documents(chunks, embeddings)
+    return vectorstore
+
+
 def create_vectordb(persist_dir: str, files):
     print("--Creating Index")
     text_chunks = load_and_split_doc(files)
-
     vectorstore = FAISS.from_documents(text_chunks, embeddings)
     with open(f"{persist_dir}.pkl", "wb") as f:
         pickle.dump(vectorstore, f, protocol=pickle.HIGHEST_PROTOCOL)

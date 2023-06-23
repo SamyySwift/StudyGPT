@@ -2,19 +2,20 @@ from dataclasses import dataclass
 from typing import Literal
 
 import streamlit as st
+from PIL import Image
 from streamlit_extras.add_vertical_space import add_vertical_space
+from streamlit_extras.stateful_button import button
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_lottie import st_lottie
+
+from utils.config import display_alert, display_animation, matching_notification
 from utils.extract import extract_text
-from utils.config import display_alert, load_lottiefile, matching_notification
 from utils.firebase import folder_exist
-from utils.flipbot import create_vectordb, load_vectordb, query
-from PIL import Image
-
-
-im = Image.open("static/logo.png")
+from utils.flipbot import create_vectordb, index_cam_input, load_vectordb, query
 
 # -------------------------------- PAGE SETUP --------------------------------------------
+
+im = Image.open("static/logo.png")
 st.set_page_config(layout="centered", page_icon=im, page_title="FlipBot")
 
 with open("static/style.css") as f:
@@ -87,15 +88,19 @@ def clear_main_query():
 
 def process_cam_input(image):
     bytes_data = image.getvalue()
-    text = extract_text(bytes_data)
-    st.write(text)
+    file_name = image.name
+    extract_text(bytes_data, file_name)
+    with st.spinner("Indexing Camera Input..."):
+        vectordb = index_cam_input(file_name)
+        if "vectordb" not in st.session_state:
+            st.session_state.vectordb = vectordb
+    display_alert("Done Indexing!")
 
 
 def main():
     col1, col2 = st.columns([2, 4])
     with col1:
-        lottie_bot = load_lottiefile("lotties/robot.json")
-        st_lottie(lottie_bot)
+        display_animation("lotties/robot.json")
 
     with col2:
         st.markdown("# :blue[Flip]:red[Bot]")
@@ -110,15 +115,10 @@ def main():
     with col3:
         index_btn = st.button("Index Documents")
     with col4:
-        if "image_buffer" not in st.session_state:
-            st.session_state.image_buffer = None
-
-        if st.button("Use Camera"):
-            st.session_state.image_buffer = st.camera_input(label="Capture Image")
-        if st.session_state.image_buffer is not None:
-            st.sidebar.write("captured")
-            st.write(st.session_state.image_buffer)
-            # process_cam_input(image)
+        if button("Use Camera", key="bt1"):
+            image = st.camera_input(label="Snap Document")
+            if image:
+                process_cam_input(image)
 
     try:
         if index_btn:
