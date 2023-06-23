@@ -120,8 +120,6 @@ def main():
             if image:
                 process_cam_input(image)
 
-    if "choice" not in st.session_state:
-        st.session_state.choice = ""
     try:
         if index_btn:
             if uploaded_files is not None:
@@ -129,10 +127,8 @@ def main():
 
                 if folder_exist(persist_dir):
                     st.success("🔔There's a match🎉. Would you like to study together?")
-                    st.session_state.choice = pills(
-                        "Go to StudyBuddy", ["NO", "YES"], index=None
-                    )
-                    if st.session_state.choice == "YES":
+
+                    if button("Take me to StuddyBuddy", key="sb"):
                         switch_page("StudyBuddy")
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
