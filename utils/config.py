@@ -13,7 +13,7 @@ notification_styles = {
 }
 
 
-@st.cache_data
+# @st.cache_data
 def load_lottiefile(filepath: str):
     with open(filepath, "r", encoding="utf8") as f:
         return json.load(f)
