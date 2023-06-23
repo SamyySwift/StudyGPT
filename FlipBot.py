@@ -7,7 +7,7 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.stateful_button import button
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_pills import pills
-from utils.config import custom_notification_box, notification_styles
+
 from utils.config import display_alert, display_animation
 from utils.extract import extract_text
 from utils.firebase import folder_exist
@@ -120,6 +120,9 @@ def main():
             if image:
                 process_cam_input(image)
 
+    def switch():
+        switch_page("StudyBuddy")
+
     try:
         if index_btn:
             if uploaded_files is not None:
@@ -131,13 +134,10 @@ def main():
                         vectordb = load_vectordb(persist_dir)
                         if "vectordb" not in st.session_state:
                             st.session_state.vectordb = vectordb
-                    custom_notification_box(
-                        icon="info",
-                        textDisplay="There's a Match! Would you like to pair?",
-                        externalLink="",
-                        url="https://flipbot.streamlit.app/StudyBuddy",
-                        styles=notification_styles,
-                    )
+                        st.success(
+                            "🔔There's a match🎉. Would you like to study together?"
+                        )
+                        st.button("Go to StudyBuddy", on_click=switch)
 
                 else:
                     with st.spinner("Indexing your documents..."):
