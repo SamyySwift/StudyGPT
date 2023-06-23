@@ -1,7 +1,9 @@
 import streamlit as st
 from utils.config import display_animation
 from streamlit_extras.add_vertical_space import add_vertical_space
-from FlipBot import Message
+from dataclasses import dataclass
+from typing import Literal
+
 
 col1, col2 = st.columns([2, 4])
 with col1:
@@ -25,8 +27,15 @@ uploaded_file = st.file_uploader(
 share_button = st.button("Share")
 if share_button and uploaded_file:
     st.success("File Sent!")
-else:
-    st.warning("upload files to share")
+
+
+@dataclass
+class chatMessage:
+    """Class for keeping track of a chat message."""
+
+    origin: Literal["human", "ai"]
+    message: str
+
 
 if "chat_hist" not in st.session_state:
     st.session_state.chat_hist = []
@@ -40,7 +49,7 @@ def chat():
         #     st.session_state.vectordb,
         #     st.session_state.return_source,
         # )
-        st.session_state.chat_hist.append(Message("human", human_prompt))
+        st.session_state.chat_hist.append(chatMessage("human", human_prompt))
         # st.session_state.history.append(Message("ai", chatgpt_response))
 
     st.session_state.chat_query = ""
