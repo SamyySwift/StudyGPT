@@ -115,9 +115,9 @@ def main():
 
         if st.button("Use Camera"):
             st.session_state.image_buffer = st.camera_input(label="Capture Image")
-            if st.session_state.image_buffer is not None:
-                st.write(st.session_state.image_buffer)
-                # process_cam_input(image)
+        if st.session_state.image_buffer is not None:
+            st.write(st.session_state.image_buffer)
+            # process_cam_input(image)
 
     try:
         if index_btn:
