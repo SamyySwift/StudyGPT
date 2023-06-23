@@ -94,7 +94,7 @@ def process_cam_input(image):
         vectordb = index_cam_input(file_name)
         if "vectordb" not in st.session_state:
             st.session_state.vectordb = vectordb
-    display_alert("Done Indexing!")
+    display_alert("Camera Image Indexed!")
 
 
 def main():
