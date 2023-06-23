@@ -134,7 +134,7 @@ def main():
                         st.success(
                             "🔔There's a match🎉. Would you like to study together?"
                         )
-                        if button("GO", key="sb"):
+                        if st.button("GO"):
                             switch_page("StudyBuddy")
 
                 else:
