@@ -126,15 +126,16 @@ def main():
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
-                    st.success("🔔There's a match🎉. Would you like to study together?")
-                    if button("GO", key="sb"):
-                        switch_page("StudyBuddy")
-                        st.experimental_rerun()
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
                         if "vectordb" not in st.session_state:
                             st.session_state.vectordb = vectordb
+                        st.success(
+                            "🔔There's a match🎉. Would you like to study together?"
+                        )
+                        if button("GO", key="sb"):
+                            switch_page("StudyBuddy")
 
                 else:
                     with st.spinner("Indexing your documents..."):
