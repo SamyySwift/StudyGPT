@@ -110,10 +110,14 @@ def main():
     with col3:
         index_btn = st.button("Index Documents")
     with col4:
+        if "image_buffer" not in st.session_state:
+            st.session_state.image_buffer = None
+
         if st.button("Use Camera"):
-            image = st.camera_input(label="Capture Image")
-            if image is not None:
-                process_cam_input(image)
+            st.session_state.image_buffer = st.camera_input(label="Capture Image")
+            if st.session_state.image_buffer is not None:
+                st.write(st.session_state.image_buffer)
+                # process_cam_input(image)
 
     try:
         if index_btn:
