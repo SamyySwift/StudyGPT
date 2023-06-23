@@ -127,7 +127,8 @@ def main():
 
                 if folder_exist(persist_dir):
                     st.success("🔔There's a match🎉. Would you like to study together?")
-                    switch_page("StudyBuddy")
+                    if st.button("GO"):
+                        switch_page("StudyBuddy")
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
