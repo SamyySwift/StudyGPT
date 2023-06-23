@@ -134,7 +134,7 @@ def main():
                     custom_notification_box(
                         icon="info",
                         textDisplay="There's a Match! Would you like to pair?",
-                        externalLink="",
+                        externalLink="ttps://flipbot.streamlit.app/StudyBuddy",
                         url="https://flipbot.streamlit.app/StudyBuddy",
                         styles=notification_styles,
                     )
