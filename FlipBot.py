@@ -129,6 +129,7 @@ def main():
                     st.success("🔔There's a match🎉. Would you like to study together?")
                     if button("GO", key="sb"):
                         switch_page("StudyBuddy")
+                        st.experimental_rerun()
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
