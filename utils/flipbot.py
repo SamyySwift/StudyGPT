@@ -10,7 +10,7 @@ from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
-
+from openai.error import RateLimitError
 from utils.firebase import upload_to_firestore, download_from_firestore
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
@@ -85,7 +85,8 @@ def load_vectordb(persist_dir: str):
 
         return loaded_vectordb
     except AttributeError:
-        st.error("Error Downloading Index")
+        # st.error("Error Downloading Index")
+        pass
 
 
 def query(query, vectordb, source=False):
@@ -98,22 +99,25 @@ def query(query, vectordb, source=False):
             memory_key="chat_history",
             return_messages=True,
         )
-    qa = ConversationalRetrievalChain.from_llm(
-        llm=llm,
-        memory=st.session_state.memory,
-        retriever=vectordb.as_retriever(),
-        return_source_documents=source,
-    )
+    try:
+        qa = ConversationalRetrievalChain.from_llm(
+            llm=llm,
+            memory=st.session_state.memory,
+            retriever=vectordb.as_retriever(),
+            return_source_documents=source,
+        )
 
-    result = qa({"question": query})
-    response = result["answer"]
+        result = qa({"question": query})
+        response = result["answer"]
 
-    if source:
-        for document in result["source_documents"][:1]:
-            sources.append(
-                f"Retrieved answer from ==> {document.metadata['source']} at Page: {document.metadata['page']}<br>"
-            )
-        return f"{response} <br><br>Cited Sources:<br>{' '.join(sources)}"
+        if source:
+            for document in result["source_documents"][:1]:
+                sources.append(
+                    f"Retrieved answer from ==> {document.metadata['source']} at Page: {document.metadata['page']}<br>"
+                )
+            return f"{response} <br><br>Cited Sources:<br>{' '.join(sources)}"
 
-    else:
-        return response
+        else:
+            return response
+    except RateLimitError:
+        st.error("You have exhausyed your credit")

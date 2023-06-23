@@ -126,8 +126,11 @@ def main():
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
-                    matching_notification()
-                    display_alert("Document is already Indexed!")
+                    opt = matching_notification()
+                    if opt == "YES":
+                        switch_page("StudyBuddy")
+
+                    # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
                         if "vectordb" not in st.session_state:

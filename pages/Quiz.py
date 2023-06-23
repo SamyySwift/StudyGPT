@@ -30,7 +30,10 @@ if "quiz_questions" not in st.session_state:
     st.session_state.quiz_questions = ""
 
 with st.sidebar:
-    st.button("Reset Quiz", on_click=reset_quiz)
+    try:
+        st.button("Reset Quiz", on_click=reset_quiz)
+    except FileNotFoundError:
+        pass
 
 
 def clear_quiz_query():
