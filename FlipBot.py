@@ -113,7 +113,7 @@ def main():
     )
     col3, col4 = st.columns([2, 7])
     with col3:
-        index_btn = st.button("Index Documents")
+        index_btn = button("Index Documents", key="ind")
     with col4:
         if button("Use Camera", key="bt1"):
             image = st.camera_input(label="Snap Document")
