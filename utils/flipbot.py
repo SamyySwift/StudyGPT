@@ -40,7 +40,7 @@ def load_and_split_doc(pdf_files):
             loaders.append(PyPDFLoader(file.name))
         elif file.name.endswith(".txt"):
             file_data = file.read()
-            with open(f"{file.name}", "w") as f:
+            with open(f"{file.name}", "wb") as f:
                 f.write(file_data)
             loaders.append(TextLoader(file.name))
 
