@@ -31,7 +31,7 @@ if "chat_hist" not in st.session_state:
 
 
 def chat():
-    if st.session_state.chat:
+    if st.session_state.chat_query:
         human_prompt = st.session_state.chat_query
         # chatgpt_response = query(
         #     human_prompt,

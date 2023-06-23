@@ -134,6 +134,7 @@ def main():
                         icons=["👎", "👍"],
                         index=None,
                     )
+                    st.write(option)
                     if option == "YES":
                         switch_page("StudyBuddy")
 
