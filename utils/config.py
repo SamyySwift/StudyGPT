@@ -44,6 +44,6 @@ def matching_notification():
     st.success("🔔There's a match🎉. Would you like to study together?")
 
     option = pills(
-        "Go to StudyBuddy", label=["NO", "YES"], icons=["👎", "👍"], index=None
+        "Go to StudyBuddy", options=["NO", "YES"], icons=["👎", "👍"], index=None
     )
     return option
