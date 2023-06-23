@@ -113,8 +113,7 @@ def main():
         if st.button("Use Camera"):
             image = st.camera_input(label="Capture Image")
             if image is not None:
-                st.sidebar.write(image.getvalue())
-                # process_cam_input(image)
+                process_cam_input(image)
 
     try:
         if index_btn:
