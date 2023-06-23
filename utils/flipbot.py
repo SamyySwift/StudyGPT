@@ -106,9 +106,9 @@ def query(query, vectordb, source=False):
     if source:
         for document in result["source_documents"][:1]:
             sources.append(
-                f"Retrieved answer from ==> {document.metadata['source']} at Page: {document.metadata['page']}<br><br>"
+                f"Retrieved answer from ==> {document.metadata['source']} at Page: {document.metadata['page']}<br>"
             )
-        return f"FlipBot: {response} <br><br>Cited Sources:<br>{' '.join(sources)}"
+        return f"{response} <br><br>Cited Sources:<br>{' '.join(sources)}"
 
     else:
         return response
