@@ -23,8 +23,10 @@ uploaded_file = st.file_uploader(
     ":blue[share files with your buddy]", accept_multiple_files=True
 )
 share_button = st.button("Share")
-if share_button:
+if share_button and uploaded_file:
     st.success("File Sent!")
+else:
+    st.warning("upload files to share")
 
 if "chat_hist" not in st.session_state:
     st.session_state.chat_hist = []
