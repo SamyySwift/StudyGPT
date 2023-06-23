@@ -111,13 +111,10 @@ def main():
         index_btn = st.button("Index Documents")
     with col4:
         if st.button("Use Camera"):
-            image = st.camera_input(label="Capture")
+            image = st.camera_input(label="Capture Image")
             if image is not None:
-                display_alert("captured")
-                st.write(image.getvalue())
+                st.sidebar.write(image.getvalue())
                 # process_cam_input(image)
-            # else:
-            #     display_alert("Take an Image")
 
     try:
         if index_btn:
