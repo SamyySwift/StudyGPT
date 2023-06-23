@@ -37,7 +37,10 @@ def evaluate_response(query, questions, responses):
 
 
 def delete_question():
-    os.remove("questions.txt")
+    try:
+        os.remove("questions.txt")
+    except FileNotFoundError:
+        st.warning("Quiz already reset!")
 
 
 def clear_fields():

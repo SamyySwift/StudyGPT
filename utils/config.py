@@ -34,16 +34,16 @@ def display_alert(message, icon="info"):
     )
 
 
-def matching_notification():
-    # card(
-    #     title="Matching Alert",
-    #     text="Some other user uploaded this exact document, would you like to study together?",
-    #     image="https://firebasestorage.googleapis.com/v0/b/flipbot-4f922.appspot.com/o/logo.jpeg?alt=media&token=1b8a2ccf-11c8-49a8-bd20-4de1ed6e1f69",
-    #     url="https://flipbot.streamlit.app/StudyBuddy",
-    # )
-    st.success("🔔There's a match🎉. Would you like to study together?")
+# def matching_notification():
+#     # card(
+#     #     title="Matching Alert",
+#     #     text="Some other user uploaded this exact document, would you like to study together?",
+#     #     image="https://firebasestorage.googleapis.com/v0/b/flipbot-4f922.appspot.com/o/logo.jpeg?alt=media&token=1b8a2ccf-11c8-49a8-bd20-4de1ed6e1f69",
+#     #     url="https://flipbot.streamlit.app/StudyBuddy",
+#     # )
+#     st.success("🔔There's a match🎉. Would you like to study together?")
 
-    option = pills(
-        "Go to StudyBuddy", options=["NO", "YES"], icons=["👎", "👍"], index=None
-    )
-    return option
+#     option = pills(
+#         "Go to StudyBuddy", options=["NO", "YES"], icons=["👎", "👍"], index=None
+#     )
+#     return option

@@ -22,11 +22,32 @@ st.subheader("Share Files")
 uploaded_file = st.file_uploader(
     ":blue[share files with your buddy]", accept_multiple_files=True
 )
+share_button = st.button("Share")
+if share_button:
+    st.success("File Sent!")
+
+if "chat_hist" not in st.session_state:
+    st.session_state.chat_hist = []
+
+
+def chat():
+    if st.session_state.chat:
+        human_prompt = st.session_state.chat_query
+        # chatgpt_response = query(
+        #     human_prompt,
+        #     st.session_state.vectordb,
+        #     st.session_state.return_source,
+        # )
+        st.session_state.chat_hist.append(Message("human", human_prompt))
+        # st.session_state.history.append(Message("ai", chatgpt_response))
+
+    st.session_state.chat_query = ""
+
 
 chat_placeholder = st.container()
 
 with chat_placeholder:
-    for chat in st.session_state.history:
+    for chat in st.session_state.chat_hist:
         div = f"""
         <div class="chat-row 
                     {'' if chat.origin == 'ai' else 'row-reverse'}">
@@ -42,12 +63,12 @@ with chat_placeholder:
                     """
         st.markdown(div, unsafe_allow_html=True)
 
-        # Display a text input widget
 
 add_vertical_space(2)
+st.subheader("Chat With Buddy")
 st.text_input(
-    ":blue[Ask FlipBot any question as well as follow up questions]",
+    ":blue[Chat with your buddy]",
     placeholder="Ask questions based on your uploaded materials...",
-    # on_change=clear_main_query,
-    key="main_query",
+    on_change=chat,
+    key="chat_query",
 )

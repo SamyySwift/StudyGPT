@@ -6,9 +6,9 @@ from PIL import Image
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.stateful_button import button
 from streamlit_extras.switch_page_button import switch_page
-from streamlit_lottie import st_lottie
+from streamlit_pills import pills
 
-from utils.config import display_alert, display_animation, matching_notification
+from utils.config import display_alert, display_animation
 from utils.extract import extract_text
 from utils.firebase import folder_exist
 from utils.flipbot import create_vectordb, index_cam_input, load_vectordb, query
@@ -126,8 +126,15 @@ def main():
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
-                    opt = matching_notification()
-                    if opt == "YES":
+                    st.success("🔔There's a match🎉. Would you like to study together?")
+
+                    option = pills(
+                        "Go to StudyBuddy",
+                        options=["NO", "YES"],
+                        icons=["👎", "👍"],
+                        index=None,
+                    )
+                    if option == "YES":
                         switch_page("StudyBuddy")
 
                     # display_alert("Document is already Indexed!")

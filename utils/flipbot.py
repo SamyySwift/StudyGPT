@@ -120,4 +120,4 @@ def query(query, vectordb, source=False):
         else:
             return response
     except RateLimitError:
-        st.error("You have exhausyed your credit")
+        st.error("You have exhausted your credit")
