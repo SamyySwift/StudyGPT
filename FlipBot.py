@@ -126,17 +126,16 @@ def main():
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
-                    switch_page("StudyBuddy")
+                    option = pills("Go to StudyBuddy", ["NO", "YES"], index=None)
+                    if option == "YES":
+                        switch_page("StudyBuddy")
+
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
                         if "vectordb" not in st.session_state:
                             st.session_state.vectordb = vectordb
                     # st.success("🔔There's a match🎉. Would you like to study together?")
-
-                    # option = st.checkbox("Yes")
-                    # if option:
-                    #     st.sidebar.write("yes")
 
                 else:
                     with st.spinner("Indexing your documents..."):
