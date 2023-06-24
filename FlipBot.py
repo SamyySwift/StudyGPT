@@ -120,15 +120,16 @@ def main():
             if image:
                 process_cam_input(image)
 
-    def switch():
-        switch_page("Quiz")
-
     try:
         if index_btn:
+            if "state" not in st.session_state:
+                st.session_state.state = False
+
             if uploaded_files is not None:
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
+                    st.session_state.state = True
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
@@ -137,7 +138,8 @@ def main():
                         st.success(
                             "🔔There's a match🎉. Would you like to study together?"
                         )
-                        st.button("Go to StudyBuddy", on_click=switch)
+                        if st.session_state.state and st.button("Go to StudyBuddy"):
+                            switch_page("StudyBuddy")
 
                 else:
                     with st.spinner("Indexing your documents..."):
