@@ -122,24 +122,19 @@ def main():
 
     try:
         if index_btn:
-            if "state" not in st.session_state:
-                st.session_state.state = False
-
             if uploaded_files is not None:
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
-                    st.session_state.state = True
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
                         if "vectordb" not in st.session_state:
                             st.session_state.vectordb = vectordb
-                        st.success(
-                            "🔔There's a match🎉. Would you like to study together?"
-                        )
-                        if st.session_state.state and st.button("Go to StudyBuddy"):
-                            switch_page("StudyBuddy")
+
+                    st.success("🔔There's a match🎉. Would you like to study together?")
+
+                    # switch_page("StudyBuddy")
 
                 else:
                     with st.spinner("Indexing your documents..."):
