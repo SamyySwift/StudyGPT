@@ -196,7 +196,7 @@ def main():
                     width=32 height=32>
             <div class="chat-bubble
                 {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-                    # &#8203;{chat.message}
+                    &#8203;{chat.message}
             </div>
     </div>
                 """
