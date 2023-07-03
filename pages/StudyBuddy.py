@@ -1,8 +1,12 @@
 import streamlit as st
 from utils.config import display_animation
 from streamlit_extras.add_vertical_space import add_vertical_space
-from dataclasses import dataclass
-from typing import Literal
+import random
+import time
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 
 col1, col2 = st.columns([2, 4])
@@ -25,64 +29,53 @@ uploaded_file = st.file_uploader(
     ":blue[share files with your buddy]", accept_multiple_files=True
 )
 share_button = st.button("Share")
-st.markdown("---")
+add_vertical_space(2)
+
+
 if share_button and uploaded_file:
     st.success("File Sent!")
 elif share_button and uploaded_file is None:
     st.warning("upload files before sharing")
 
 
-@dataclass
-class chatMessage:
-    """Class for keeping track of a chat message."""
-
-    origin: Literal["human", "ai"]
-    message: str
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"], avatar=message["avatar"]):
+        st.markdown(message["content"])
 
 
-if "chat_hist" not in st.session_state:
-    st.session_state.chat_hist = []
+# st.subheader("Chat With Buddy")
+# Accept user input
+if prompt := st.chat_input("Send a message..."):
+    # Add user message to chat history
+    st.session_state.messages.append(
+        {"role": "user", "content": prompt, "avatar": "👨‍💻"}
+    )
+    # Display user message in chat message container
+    with st.chat_message("user", avatar="👨‍💻"):
+        st.markdown(prompt)
 
-
-def chat_func():
-    if st.session_state.chat_query:
-        human_prompt = st.session_state.chat_query
-        # chatgpt_response = query(
-        #     human_prompt,
-        #     st.session_state.vectordb,
-        #     st.session_state.return_source,
-        # )
-        st.session_state.chat_hist.append(chatMessage("human", human_prompt))
-        # st.session_state.history.append(Message("ai", chatgpt_response))
-
-    st.session_state.chat_query = ""
-
-
-chat_placeholder = st.container()
-
-with chat_placeholder:
-    for chat in st.session_state.chat_hist:
-        div = f"""
-        <div class="chat-row 
-                    {'' if chat.origin == 'ai' else 'row-reverse'}">
-                    <img class="chat-icon" src="app/static/{
-                        'ai_icon.png' if chat.origin == 'ai' 
-                                    else 'user.png'}"
-                        width=32 height=32>
-                <div class="chat-bubble
-                    {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-                        &#8203;{chat.message}
-                </div>
-        </div>
-                    """
-        st.markdown(div, unsafe_allow_html=True)
-
-
-add_vertical_space(2)
-st.subheader("Chat With Buddy")
-st.text_input(
-    ":blue[Chat with your buddy]",
-    placeholder="Type a message...",
-    on_change=chat_func,
-    key="chat_query",
-)
+    # Display assistant response in chat message container
+    with st.chat_message("assistant", avatar="👦"):
+        message_placeholder = st.empty()
+        full_response = ""
+        assistant_response = random.choice(
+            [
+                "Hello there! How can I assist you today?",
+                "Hi, Is there anything I can help you with?",
+                "Do you need help?",
+                "Where do you have issues?",
+                "what topic do you have issues with?",
+            ]
+        )
+        # Simulate stream of response with milliseconds delay
+        for chunk in assistant_response.split():
+            full_response += chunk + " "
+            time.sleep(0.05)
+            # Add a blinking cursor to simulate typing
+            message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(full_response)
+    # Add assistant response to chat history
+    st.session_state.messages.append(
+        {"role": "assistant", "content": full_response, "avatar": "👨"}
+    )

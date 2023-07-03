@@ -65,7 +65,18 @@ class Message:
     message: str
 
 
-def clear_main_query():
+def initialize_session():
+    if "vectordb" not in st.session_state:
+        st.session_state.vectordb = None
+    if "result" not in st.session_state:
+        st.session_state.result = ""
+    if "history" not in st.session_state:
+        st.session_state.history = []
+    if "exists" not in st.session_state:
+        st.session_state.exists = False
+
+
+def chat_function():
     if st.session_state.main_query:
         try:
             human_prompt = st.session_state.main_query
@@ -83,7 +94,7 @@ def clear_main_query():
                 "Please ensure that you have indexed your documents",
                 icon="warning",
             )
-    st.session_state.main_query = ""
+    # st.session_state.main_query = ""
 
 
 def process_cam_input(image):
@@ -92,12 +103,14 @@ def process_cam_input(image):
     extract_text(bytes_data, file_name)
     with st.spinner("Indexing Camera Input..."):
         vectordb = index_cam_input(file_name)
-        if "vectordb" not in st.session_state:
-            st.session_state.vectordb = vectordb
+        st.session_state.vectordb = vectordb
     display_alert("Camera Image Indexed!")
 
 
 def main():
+    # initialize session states
+    initialize_session()
+
     col1, col2 = st.columns([2, 4])
     with col1:
         display_animation("lotties/robot.json")
@@ -126,24 +139,38 @@ def main():
                 persist_dir = "+".join(file.name[:10] for file in uploaded_files)
 
                 if folder_exist(persist_dir):
+                    st.session_state.exists = True
                     # display_alert("Document is already Indexed!")
                     with st.spinner("Loading Index..."):
                         vectordb = load_vectordb(persist_dir)
-                        if "vectordb" not in st.session_state:
-                            st.session_state.vectordb = vectordb
-
-                    st.success("🔔There's a match🎉. Would you like to study together?")
-
-                    # switch_page("StudyBuddy")
+                        st.session_state.vectordb = vectordb
 
                 else:
                     with st.spinner("Indexing your documents..."):
                         vectordb = create_vectordb(persist_dir, uploaded_files)
-                        if "vectordb" not in st.session_state:
-                            st.session_state.vectordb = vectordb
+                        st.session_state.vectordb = vectordb
                     display_alert("Done Indexing!")
             else:
                 display_alert("Upload files before indexing!", icon="warning")
+
+        # Add a notification place holder
+        notification_plc_holder = st.empty()
+
+        with notification_plc_holder:
+            if st.session_state.exists:
+                opt = pills(
+                    "🔔There's a 25% match🎉. Would you like to study together?",
+                    ["Yes", "No"],
+                    ["👍", "👎"],
+                    index=None,
+                )
+                if opt == "Yes":
+                    switch_page("StudyBuddy")
+                elif opt == "No":
+                    st.session_state.exists = False
+                    with notification_plc_holder:
+                        st.write("")
+
     except IndexError:
         display_alert("Upload files before indexing!", icon="warning")
 
@@ -151,49 +178,43 @@ def main():
 
     st.subheader("Interact with :blue[Flip]:red[Bot]")
     # Create tabs
-    tab1, tab2 = st.tabs(["Ask FlipBot", "Practice Quiz"])
+    # tab1, tab2 = st.tabs(["Ask FlipBot", "Practice Quiz"])
 
-    with tab1:
-        if "result" not in st.session_state:
-            st.session_state.result = ""
-        if "history" not in st.session_state:
-            st.session_state.history = []
+    # with tab1:
+    # Add chat page placeholder
+    chat_placeholder = st.container()
+    add_vertical_space(2)
 
-        # Add chat page placeholder
-        chat_placeholder = st.container()
-        add_vertical_space(2)
+    with chat_placeholder:
+        for chat in st.session_state.history:
+            div = f"""
+    <div class="chat-row 
+                {'' if chat.origin == 'ai' else 'row-reverse'}">
+                <img class="chat-icon" src="app/static/{
+                    'ai_icon.png' if chat.origin == 'ai' 
+                                else 'user.png'}"
+                    width=32 height=32>
+            <div class="chat-bubble
+                {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
+                    # &#8203;{chat.message}
+            </div>
+    </div>
+                """
+            st.markdown(div, unsafe_allow_html=True)
 
-        with chat_placeholder:
-            for chat in st.session_state.history:
-                div = f"""
-        <div class="chat-row 
-                    {'' if chat.origin == 'ai' else 'row-reverse'}">
-                    <img class="chat-icon" src="app/static/{
-                        'ai_icon.png' if chat.origin == 'ai' 
-                                    else 'user.png'}"
-                        width=32 height=32>
-                <div class="chat-bubble
-                    {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-                        &#8203;{chat.message}
-                </div>
-        </div>
-                    """
-                st.markdown(div, unsafe_allow_html=True)
+    # Display a text input widget
+    st.chat_input(
+        placeholder="Ask questions based on your uploaded materials...",
+        on_submit=chat_function,
+        key="main_query",
+    )
 
-        # Display a text input widget
-        st.text_input(
-            ":blue[Ask FlipBot any question as well as follow up questions]",
-            placeholder="Ask questions based on your uploaded materials...",
-            on_change=clear_main_query,
-            key="main_query",
-        )
-
-    with tab2:
-        add_vertical_space(1)
-        st.write("Click the button below 👇 to go to practice session")
-        want_to_practice = st.button("Take me to quiz")
-        if want_to_practice:
-            switch_page("Quiz")
+    # with tab2:
+    #     add_vertical_space(1)
+    #     st.write("Click the button below 👇 to go to practice session")
+    #     want_to_practice = st.button("Take me to quiz")
+    #     if want_to_practice:
+    #         switch_page("Quiz")
 
     # else:
     #     st.markdown(
