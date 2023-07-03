@@ -17,7 +17,8 @@ with col2:
     st.markdown("**:blue[Your personal AI examiner]**")
 st.markdown(
     "**:blue[Flip]:red[Bot]** can generate both :orange[theoritical] and :red[mulitichoice] questions for you 😉 based on your provided documents. \
-    It also evaluates and grades your performance after completing a quiz.  \n :blue[Psst!] You'll need to score at least :green[50%] to pass the quiz."
+    It also evaluates and grades your performance after completing a quiz.  \n :blue[Psst!] You'll need to score at least :green[50%] to pass the quiz.\
+   \n\n PROMPT TEMPLATE \n\n Use this prompt to generate questions. :blue[Generate <number of questions> <type of question e.g multi-choice> questions on the topic of <Topic>. Focus on open-ended questions. Avoid providing definitions or factual statements.]"
 )
 
 add_vertical_space(2)

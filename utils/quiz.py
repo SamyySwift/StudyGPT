@@ -14,21 +14,28 @@ def evaluate_response(query, questions, responses):
 
     for i in range(len(questions)):
         # Specify the prompt for the GPT model
-        prompt = f"""Given this Question: {questions[i]} and the Response: {responses[i]}, \
-                            Return True if the response is correct compared to the actual answer and return False if the response is \
-                            incorrect followed by the correct answer.
+        prompt = f"""Given this Question: {questions[i]} and the Response: {responses[i]},
+                    Return True if the user's response is correct compared to the actual answer and return False if the user's response is incorrect, followed by the correct answer.
 
-                            for example:
-                            
-                            True
-                            False, followed up by the correct answer
-                            """
+                    For example:
+
+                    If the user's response is correct:
+                    True
+
+                    If the user's response is incorrect:
+                    False, followed by the correct answer
+                    """
         # Use the GPT model to generate feedback on the student's response
         feedback = query(prompt, st.session_state.vectordb)
+        print(feedback)
 
-        if "True" in feedback:
+        if ("True" in feedback) or ("Yes" in feedback):
             st.session_state.num_correct += 1
-        elif "False" in feedback or "No" in feedback:
+        elif (
+            ("False" in feedback)
+            or ("No" in feedback)
+            or ("The correct answer" in feedback)
+        ):
             correct_answers[questions[i]] = feedback
 
     score = round((st.session_state.num_correct / len(questions)) * 100, 2)
@@ -72,7 +79,7 @@ def extract_questions(file_path):
             line = line.strip()
 
             # Check if the line starts with a number followed by a dot
-            if re.match(r"^[Q\d]+\.", line):
+            if re.match(r"^(Q\d+|[1-9]\d*)[:.]", line):
                 # If there is a current question, add it to the list
                 if current_question:
                     questions.append(current_question.strip())
@@ -177,11 +184,11 @@ def present_quiz(query, questions):
                     st.write(f":blue[GRADE:] :red[{score}%]")
                     st.write("Unfortunately, you **:red[failed!😔]**")
 
-                st.write("###")
-                st.subheader(":blue[Corrections]")
-                st.write("Below are the correct answers to the ones you got wrong")
-                st.markdown("---")
-                # display the questions
-                for q, a in answers.items():
-                    st.write(q)
-                    st.write(f":green[Correct Answer: {a}]")
+                    st.write("###")
+                    st.subheader(":blue[Corrections]")
+                    st.write("Below are the correct answers to the ones you got wrong")
+                    st.markdown("---")
+                    # display the questions
+                    for q, a in answers.items():
+                        st.write(q)
+                        st.write(f":green[Correct Answer: {a}]")
