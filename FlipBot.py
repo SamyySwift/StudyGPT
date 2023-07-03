@@ -159,7 +159,7 @@ def main():
         with notification_plc_holder:
             if st.session_state.exists:
                 opt = pills(
-                    "🔔There's a 25% match🎉. Would you like to study together?",
+                    "🔔There's a :yellow[25%] match🎉. Would you like to meet a study buddy?",
                     ["Yes", "No"],
                     ["👍", "👎"],
                     index=None,
